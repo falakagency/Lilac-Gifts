@@ -43,7 +43,7 @@ export default function ShareButton({ title, text, url }: Props) {
     <>
       <button
         onClick={handleShare}
-        className="w-full bg-white text-[#534AB7] border-2 border-[#C8A8E9] py-4 rounded-2xl font-bold text-lg hover:bg-[#EDE0F7] btn-anim flex items-center justify-center gap-2"
+        className="w-full bg-white dark:bg-[#16213e] text-[#534AB7] dark:text-[#C8A8E9] border-2 border-[#C8A8E9] dark:border-[#2a2f4a] py-4 rounded-2xl font-bold text-lg hover:bg-[#EDE0F7] dark:hover:bg-[#2a2f4a] btn-anim flex items-center justify-center gap-2"
       >
         <span>شارك المنتج</span>
         <span>📤</span>

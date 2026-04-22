@@ -2,10 +2,12 @@ import { Link, useLocation } from "wouter";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useCart } from "../cart";
 import { WHATSAPP_PHONE } from "../data";
+import { useTheme } from "../theme";
 import logoUrl from "@assets/image_1776889101826.png";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const { totalCount } = useCart();
+  const { theme, toggle } = useTheme();
   const [location] = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [shake, setShake] = useState(false);
@@ -26,15 +28,16 @@ export default function Layout({ children }: { children: ReactNode }) {
       return () => clearTimeout(t);
     }
     prevCount.current = totalCount;
+    return undefined;
   }, [totalCount]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-[#1a1a2e]">
       <header
         className={`sticky top-0 z-40 transition-all duration-300 ${
           scrolled
-            ? "bg-white/90 backdrop-blur-md shadow-sm border-b border-[#EDE0F7]"
-            : "bg-white/60 backdrop-blur-sm border-b border-transparent"
+            ? "bg-white/90 dark:bg-[#16213e]/90 backdrop-blur-md shadow-sm border-b border-[#EDE0F7] dark:border-[#2a2f4a]"
+            : "bg-white/60 dark:bg-[#1a1a2e]/60 backdrop-blur-sm border-b border-transparent"
         }`}
       >
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
@@ -42,10 +45,10 @@ export default function Layout({ children }: { children: ReactNode }) {
             <img
               src={logoUrl}
               alt="Lilac Gifts"
-              className="w-12 h-12 rounded-full object-cover bg-white shadow-md ring-2 ring-[#EDE0F7] transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
+              className="w-12 h-12 rounded-full object-cover bg-white shadow-md ring-2 ring-[#EDE0F7] dark:ring-[#2a2f4a] transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
             />
             <div className="flex flex-col leading-tight">
-              <span className="font-extrabold text-lg text-[#534AB7]">Lilac Gifts</span>
+              <span className="font-extrabold text-lg text-[#534AB7] dark:text-[#C8A8E9]">Lilac Gifts</span>
               <span className="text-xs text-[#A87FD1]">Make your event unforgettable</span>
             </div>
           </Link>
@@ -55,15 +58,24 @@ export default function Layout({ children }: { children: ReactNode }) {
               href="/"
               className={`hidden sm:inline-block px-4 py-2 rounded-full text-sm font-semibold btn-anim ${
                 location === "/"
-                  ? "bg-[#EDE0F7] text-[#534AB7]"
-                  : "text-[#534AB7] hover:bg-[#EDE0F7]"
+                  ? "bg-[#EDE0F7] dark:bg-[#2a2f4a] text-[#534AB7] dark:text-[#C8A8E9]"
+                  : "text-[#534AB7] dark:text-[#C8A8E9] hover:bg-[#EDE0F7] dark:hover:bg-[#2a2f4a]"
               }`}
             >
               الرئيسية
             </Link>
+
+            <button
+              onClick={toggle}
+              aria-label={theme === "dark" ? "تفعيل الوضع المضيء" : "تفعيل الوضع الداكن"}
+              className="w-10 h-10 rounded-full bg-[#EDE0F7] dark:bg-[#2a2f4a] text-[#534AB7] dark:text-[#C8A8E9] hover:bg-[#C8A8E9] hover:text-white dark:hover:bg-[#534AB7] btn-anim flex items-center justify-center text-lg"
+            >
+              {theme === "dark" ? "☀️" : "🌙"}
+            </button>
+
             <Link
               href="/cart"
-              className={`relative px-4 py-2 rounded-full bg-[#EDE0F7] text-[#534AB7] font-semibold hover:bg-[#C8A8E9] hover:text-white btn-anim flex items-center gap-2 ${
+              className={`relative px-4 py-2 rounded-full bg-[#EDE0F7] dark:bg-[#2a2f4a] text-[#534AB7] dark:text-[#C8A8E9] font-semibold hover:bg-[#C8A8E9] hover:text-white btn-anim flex items-center gap-2 ${
                 shake ? "cart-shake" : ""
               }`}
             >
@@ -83,8 +95,8 @@ export default function Layout({ children }: { children: ReactNode }) {
         {children}
       </main>
 
-      <footer className="mt-16 bg-[#EDE0F7] border-t border-[#C8A8E9]/40">
-        <div className="max-w-6xl mx-auto px-4 py-8 text-center text-[#534AB7]">
+      <footer className="mt-16 bg-[#EDE0F7] dark:bg-[#16213e] border-t border-[#C8A8E9]/40 dark:border-[#2a2f4a]">
+        <div className="max-w-6xl mx-auto px-4 py-8 text-center text-[#534AB7] dark:text-[#C8A8E9]">
           <img
             src={logoUrl}
             alt="Lilac Gifts"
@@ -92,6 +104,21 @@ export default function Layout({ children }: { children: ReactNode }) {
           />
           <div className="font-bold text-lg">Lilac Gifts — الأردن</div>
           <div className="text-sm mt-2 text-[#A87FD1]">هدايا مخصصة بحب لكل المناسبات</div>
+
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
+            <Link href="/" className="hover:underline">الرئيسية</Link>
+            <Link href="/cart" className="hover:underline">السلة</Link>
+            <Link href="/track" className="hover:underline font-bold">📦 تتبع طلبك</Link>
+            <a
+              href={`https://wa.me/${WHATSAPP_PHONE}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline"
+            >
+              تواصل واتساب
+            </a>
+          </div>
+
           <div className="text-xs mt-4 text-[#A87FD1]">
             © {new Date().getFullYear()} Lilac Gifts. جميع الحقوق محفوظة.
           </div>

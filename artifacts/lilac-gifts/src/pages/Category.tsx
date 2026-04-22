@@ -14,7 +14,7 @@ export default function Category() {
     return (
       <div className="max-w-6xl mx-auto px-4 py-20 text-center">
         <div className="text-6xl mb-4">🤷‍♀️</div>
-        <h2 className="text-2xl font-bold text-[#534AB7] mb-4">القسم غير موجود</h2>
+        <h2 className="text-2xl font-bold text-[#534AB7] dark:text-[#C8A8E9] mb-4">القسم غير موجود</h2>
         <Link
           href="/"
           className="inline-block bg-[#534AB7] text-white px-6 py-3 rounded-full font-bold hover:bg-[#A87FD1] btn-anim"
@@ -29,17 +29,17 @@ export default function Category() {
 
   return (
     <div>
-      <div className="bg-gradient-to-bl from-[#EDE0F7] to-white py-12">
+      <div className="bg-gradient-to-bl from-[#EDE0F7] to-white dark:from-[#16213e] dark:to-[#1a1a2e] py-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="text-6xl mb-3 float-slow">{category.icon}</div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#534AB7] mb-2">{category.name}</h1>
+          <h1 className="text-3xl sm:text-5xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-2">{category.name}</h1>
           <p className="text-[#A87FD1]">{category.products.length} منتجات متوفرة</p>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-10">
         <div className="mb-6">
-          <Link href="/" className="text-[#534AB7] font-semibold hover:underline">
+          <Link href="/" className="text-[#534AB7] dark:text-[#C8A8E9] font-semibold hover:underline">
             ← العودة للرئيسية
           </Link>
         </div>

@@ -20,7 +20,7 @@ export default function BudgetFilter({ value, onChange }: Props) {
             className={`btn-anim px-4 py-2 rounded-full text-sm font-bold border-2 ${
               active
                 ? "bg-[#534AB7] text-white border-[#534AB7] shadow-md"
-                : "bg-white text-[#534AB7] border-[#EDE0F7] hover:border-[#C8A8E9] hover:bg-[#EDE0F7]"
+                : "bg-white dark:bg-[#16213e] text-[#534AB7] dark:text-[#C8A8E9] border-[#EDE0F7] dark:border-[#2a2f4a] hover:border-[#C8A8E9] hover:bg-[#EDE0F7] dark:hover:bg-[#2a2f4a]"
             }`}
           >
             {opt.label}

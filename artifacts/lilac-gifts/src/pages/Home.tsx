@@ -21,10 +21,10 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-bl from-[#EDE0F7] via-white to-[#EDE0F7]">
+      <section className="relative overflow-hidden bg-gradient-to-bl from-[#EDE0F7] via-white to-[#EDE0F7] dark:from-[#16213e] dark:via-[#1a1a2e] dark:to-[#16213e]">
         <div className="max-w-6xl mx-auto px-4 py-16 sm:py-24 text-center">
           <div className="inline-block text-5xl mb-4 fade-up">🎁🌸</div>
-          <h1 className="text-4xl sm:text-6xl font-extrabold text-[#534AB7] mb-4 leading-tight slide-in-right">
+          <h1 className="text-4xl sm:text-6xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-4 leading-tight slide-in-right">
             هدايا تحكي مشاعرك
           </h1>
           <p className="text-lg sm:text-xl text-[#A87FD1] max-w-2xl mx-auto mb-8 leading-relaxed fade-up delay-200">
@@ -39,7 +39,7 @@ export default function Home() {
             </a>
             <Link
               href="/cart"
-              className="w-full sm:w-auto bg-white text-[#534AB7] border-2 border-[#C8A8E9] px-8 py-3 rounded-full font-bold text-lg hover:bg-[#EDE0F7] btn-anim"
+              className="w-full sm:w-auto bg-white dark:bg-[#16213e] text-[#534AB7] dark:text-[#C8A8E9] border-2 border-[#C8A8E9] dark:border-[#2a2f4a] px-8 py-3 rounded-full font-bold text-lg hover:bg-[#EDE0F7] dark:hover:bg-[#2a2f4a] btn-anim"
             >
               عرض السلة
             </Link>
@@ -55,7 +55,7 @@ export default function Home() {
       {/* Categories */}
       <section id="categories" className="max-w-6xl mx-auto px-4 py-16">
         <div className="text-center mb-10 fade-up">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] mb-2">تسوق حسب المناسبة</h2>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-2">تسوق حسب المناسبة</h2>
           <p className="text-[#A87FD1]">اختاري المناسبة وستجدين الهدية المثالية</p>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -63,21 +63,21 @@ export default function Home() {
             <Link
               key={cat.id}
               href={`/category/${cat.id}`}
-              className="group flex flex-col items-center justify-center bg-white border-2 border-[#EDE0F7] rounded-2xl p-6 hover:border-[#C8A8E9] hover:bg-[#EDE0F7] lift-anim shadow-sm fade-up"
+              className="group flex flex-col items-center justify-center bg-white dark:bg-[#16213e] border-2 border-[#EDE0F7] dark:border-[#2a2f4a] rounded-2xl p-6 hover:border-[#C8A8E9] hover:bg-[#EDE0F7] dark:hover:bg-[#2a2f4a] lift-anim shadow-sm fade-up"
               style={{ animationDelay: `${i * 80}ms` }}
             >
               <div className="text-5xl mb-3 icon-anim">{cat.icon}</div>
-              <div className="font-bold text-[#534AB7] text-center">{cat.name}</div>
+              <div className="font-bold text-[#534AB7] dark:text-[#C8A8E9] text-center">{cat.name}</div>
             </Link>
           ))}
         </div>
       </section>
 
       {/* Most Ordered (Bestsellers) */}
-      <section className="bg-gradient-to-bl from-[#EDE0F7]/70 to-white py-16">
+      <section className="bg-gradient-to-bl from-[#EDE0F7]/70 to-white dark:from-[#16213e] dark:to-[#1a1a2e] py-16">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-10 fade-up">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] mb-2">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-2">
               الأكثر طلباً 🔥
             </h2>
             <p className="text-[#A87FD1]">المنتجات التي يحبها عملاؤنا أكثر</p>
@@ -93,10 +93,10 @@ export default function Home() {
       </section>
 
       {/* Featured with budget filter */}
-      <section className="bg-[#EDE0F7]/40 py-16">
+      <section className="bg-[#EDE0F7]/40 dark:bg-[#16213e]/60 py-16">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-6 fade-up">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] mb-2">تسوق حسب الميزانية</h2>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-2">تسوق حسب الميزانية</h2>
             <p className="text-[#A87FD1]">اختاري ميزانيتك وستجدين الهدية المناسبة</p>
           </div>
 
@@ -132,12 +132,12 @@ export default function Home() {
           ].map((f, i) => (
             <div
               key={f.title}
-              className="bg-white p-6 rounded-2xl border border-[#EDE0F7] lift-anim fade-up"
+              className="bg-white dark:bg-[#16213e] p-6 rounded-2xl border border-[#EDE0F7] dark:border-[#2a2f4a] lift-anim fade-up"
               style={{ animationDelay: `${i * 120}ms` }}
             >
               <div className="text-4xl mb-3 icon-anim">{f.icon}</div>
-              <div className="font-bold text-[#534AB7] mb-1">{f.title}</div>
-              <div className="text-sm text-gray-500">{f.desc}</div>
+              <div className="font-bold text-[#534AB7] dark:text-[#C8A8E9] mb-1">{f.title}</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">{f.desc}</div>
             </div>
           ))}
         </div>
