@@ -5,6 +5,8 @@ export type Product = {
   desc: string;
   img: string;
   bestseller?: boolean;
+  rating: number;
+  reviews: number;
 };
 
 export type Category = {
@@ -20,8 +22,8 @@ export const categories: Category[] = [
     name: "التخرج",
     icon: "🎓",
     products: [
-      { id: 101, name: "طقم تخرج أمن عام", price: "15 د.أ", desc: "طقم هدايا مخصص لمناسبة التخرج", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=تخرج", bestseller: true },
-      { id: 102, name: "طقم تخرج جامعي", price: "20 د.أ", desc: "هدية أنيقة للخريجين الجدد", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=جامعة", bestseller: true },
+      { id: 101, name: "طقم تخرج أمن عام", price: "15 د.أ", desc: "طقم هدايا مخصص لمناسبة التخرج", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=تخرج", bestseller: true, rating: 4.8, reviews: 47 },
+      { id: 102, name: "طقم تخرج جامعي", price: "20 د.أ", desc: "هدية أنيقة للخريجين الجدد", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=جامعة", bestseller: true, rating: 4.9, reviews: 63 },
     ],
   },
   {
@@ -29,7 +31,7 @@ export const categories: Category[] = [
     name: "ترفيعات عسكرية",
     icon: "⭐",
     products: [
-      { id: 201, name: "طقم ترفيع ضابط", price: "25 د.أ", desc: "تهانٍ بالرتبة الجديدة", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=ترفيع" },
+      { id: 201, name: "طقم ترفيع ضابط", price: "25 د.أ", desc: "تهانٍ بالرتبة الجديدة", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=ترفيع", rating: 4.7, reviews: 31 },
     ],
   },
   {
@@ -37,7 +39,7 @@ export const categories: Category[] = [
     name: "يوم الأم",
     icon: "🌸",
     products: [
-      { id: 301, name: "طقم يوم الأم الكلاسيكي", price: "18 د.أ", desc: "أجمل هدية لأحن الأمهات", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=الأم", bestseller: true },
+      { id: 301, name: "طقم يوم الأم الكلاسيكي", price: "18 د.أ", desc: "أجمل هدية لأحن الأمهات", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=الأم", bestseller: true, rating: 5.0, reviews: 89 },
     ],
   },
   {
@@ -45,7 +47,7 @@ export const categories: Category[] = [
     name: "رمضان وعيد الفطر",
     icon: "🌙",
     products: [
-      { id: 401, name: "طقم رمضان الفاخر", price: "22 د.أ", desc: "إضاءة بيتك بنكهة رمضان", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=رمضان" },
+      { id: 401, name: "طقم رمضان الفاخر", price: "22 د.أ", desc: "إضاءة بيتك بنكهة رمضان", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=رمضان", rating: 4.6, reviews: 24 },
     ],
   },
   {
@@ -53,7 +55,7 @@ export const categories: Category[] = [
     name: "دلات وفناجين",
     icon: "☕",
     products: [
-      { id: 501, name: "دلة بطباعة مخصصة", price: "30 د.أ", desc: "اطبع اسمك أو صورتك", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=دلة", bestseller: true },
+      { id: 501, name: "دلة بطباعة مخصصة", price: "30 د.أ", desc: "اطبع اسمك أو صورتك", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=دلة", bestseller: true, rating: 4.9, reviews: 56 },
     ],
   },
 ];
@@ -100,3 +102,31 @@ export function filterByBudget(products: Product[], budget: BudgetFilterValue): 
 }
 
 export const WHATSAPP_PHONE = "962781747824";
+
+export type Occasion = {
+  name: string;
+  emoji: string;
+  month: number;
+  day: number;
+};
+
+export const OCCASIONS: Occasion[] = [
+  { name: "يوم الأم", emoji: "🌸", month: 3, day: 21 },
+  { name: "يوم العلم الأردني", emoji: "🇯🇴", month: 4, day: 4 },
+  { name: "عيد الفطر", emoji: "🌙", month: 3, day: 20 },
+  { name: "التخرج", emoji: "🎓", month: 6, day: 1 },
+  { name: "العودة للمدارس", emoji: "📚", month: 9, day: 1 },
+];
+
+export function getNextOccasion(now: Date = new Date()): { occasion: Occasion; date: Date; daysLeft: number } {
+  const year = now.getFullYear();
+  const today = new Date(year, now.getMonth(), now.getDate());
+  let best: { occasion: Occasion; date: Date; daysLeft: number } | null = null;
+  for (const o of OCCASIONS) {
+    let d = new Date(year, o.month - 1, o.day);
+    if (d < today) d = new Date(year + 1, o.month - 1, o.day);
+    const diff = Math.ceil((d.getTime() - today.getTime()) / 86400000);
+    if (!best || diff < best.daysLeft) best = { occasion: o, date: d, daysLeft: diff };
+  }
+  return best!;
+}

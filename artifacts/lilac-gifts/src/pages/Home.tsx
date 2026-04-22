@@ -9,6 +9,7 @@ import {
 } from "../data";
 import ProductCard from "../components/ProductCard";
 import BudgetFilter from "../components/BudgetFilter";
+import CountdownCard from "../components/CountdownCard";
 
 export default function Home() {
   const [budget, setBudget] = useState<BudgetFilterValue>("all");
@@ -47,6 +48,9 @@ export default function Home() {
         <div className="absolute top-10 right-10 text-6xl opacity-20 hidden md:block float-slow">🌷</div>
         <div className="absolute bottom-10 left-10 text-6xl opacity-20 hidden md:block float-slow">💜</div>
       </section>
+
+      {/* Countdown to next occasion */}
+      <CountdownCard />
 
       {/* Categories */}
       <section id="categories" className="max-w-6xl mx-auto px-4 py-16">

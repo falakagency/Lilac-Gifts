@@ -2,6 +2,8 @@ import { Link, useParams, useLocation } from "wouter";
 import { useState } from "react";
 import { findProduct, findCategoryByProduct, WHATSAPP_PHONE } from "../data";
 import { useCart } from "../cart";
+import Stars from "../components/Stars";
+import ShareButton from "../components/ShareButton";
 
 const GREETING_MAX = 150;
 
@@ -74,6 +76,9 @@ export default function Product() {
 
         <div className="flex flex-col fade-up delay-100">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] mb-3">{product.name}</h1>
+          <div className="mb-4">
+            <Stars rating={product.rating} reviews={product.reviews} size="md" />
+          </div>
           <div className="text-3xl font-bold text-[#A87FD1] mb-6">{product.price}</div>
           <p className="text-lg text-gray-600 mb-6 leading-relaxed">{product.desc}</p>
 
@@ -115,6 +120,8 @@ export default function Product() {
               <span>اطلب عبر واتساب</span>
               <span>💬</span>
             </a>
+
+            <ShareButton title={product.name} text={`${product.name} — ${product.price}`} />
           </div>
 
           {/* Greeting Card */}
