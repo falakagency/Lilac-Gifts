@@ -19,11 +19,119 @@ html, body {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===================== Keyframes ===================== */
+
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.fade-up {
-  animation: fadeUp 0.5s ease-out both;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  15% { transform: translateX(-4px) rotate(-8deg); }
+  30% { transform: translateX(4px) rotate(8deg); }
+  45% { transform: translateX(-3px) rotate(-6deg); }
+  60% { transform: translateX(3px) rotate(6deg); }
+  75% { transform: translateX(-2px) rotate(-3deg); }
+  90% { transform: translateX(2px) rotate(3deg); }
+}
+
+@keyframes bounceIcon {
+  0%, 100% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-8px) scale(1.15); }
+  60% { transform: translateY(2px) scale(0.95); }
+}
+
+@keyframes pulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(200, 168, 233, 0.55); }
+  70% { box-shadow: 0 0 0 14px rgba(200, 168, 233, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(200, 168, 233, 0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ===================== Utility classes ===================== */
+
+.fade-in { animation: fadeIn 0.6s ease-out both; }
+.fade-up { animation: fadeUp 0.6s ease-out both; }
+.slide-in-right { animation: slideInRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.slide-in-left { animation: slideInLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.float-slow { animation: float 3.5s ease-in-out infinite; }
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+
+.cart-shake { animation: shake 0.6s ease-in-out; }
+.icon-bounce { animation: bounceIcon 0.55s ease-out; }
+.pulse-ring { animation: pulseRing 1.6s ease-out infinite; }
+
+/* Standard interactive transitions */
+.btn-anim {
+  transition: transform 0.25s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+.btn-anim:hover { transform: scale(1.05); }
+.btn-anim:active { transform: scale(0.97); }
+
+.card-anim {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.card-anim:hover {
+  transform: scale(1.03) translateY(-2px);
+  box-shadow: 0 18px 40px -12px rgba(83, 74, 183, 0.28);
+}
+
+.lift-anim {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+.lift-anim:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px -12px rgba(168, 127, 209, 0.4);
+}
+
+.img-zoom {
+  transition: transform 0.5s ease;
+}
+.card-anim:hover .img-zoom,
+.group:hover .img-zoom {
+  transform: scale(1.08);
+}
+
+.icon-anim {
+  transition: transform 0.4s ease;
+  display: inline-block;
+}
+.lift-anim:hover .icon-anim {
+  animation: bounceIcon 0.6s ease-out;
+}
+
+@layer base {
+  body {
+    animation: fadeIn 0.4s ease-out both;
+  }
 }

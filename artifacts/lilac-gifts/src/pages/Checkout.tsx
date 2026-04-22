@@ -17,7 +17,7 @@ export default function Checkout() {
         <div className="text-7xl mb-4">🛍️</div>
         <h2 className="text-2xl font-bold text-[#534AB7] mb-2">لا توجد منتجات لإتمام الطلب</h2>
         <p className="text-[#A87FD1] mb-6">أضيفي منتجات لسلتك أولاً</p>
-        <Link href="/" className="inline-block bg-[#534AB7] text-white px-8 py-3 rounded-full font-bold hover:bg-[#A87FD1] transition">
+        <Link href="/" className="inline-block bg-[#534AB7] text-white px-8 py-3 rounded-full font-bold hover:bg-[#A87FD1] btn-anim">
             تصفحي المنتجات
           </Link>
       </div>
@@ -100,7 +100,7 @@ export default function Checkout() {
 
           <button
             type="submit"
-            className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#1da851] transition shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]"
+            className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#1da851] btn-anim shadow-lg flex items-center justify-center gap-2 "
           >
             <span>تأكيد الطلب عبر واتساب</span>
             <span>💬</span>

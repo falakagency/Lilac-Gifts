@@ -17,7 +17,7 @@ export default function Product() {
       <div className="max-w-6xl mx-auto px-4 py-20 text-center">
         <div className="text-6xl mb-4">🤷‍♀️</div>
         <h2 className="text-2xl font-bold text-[#534AB7] mb-4">المنتج غير موجود</h2>
-        <Link href="/" className="inline-block bg-[#534AB7] text-white px-6 py-3 rounded-full font-bold hover:bg-[#A87FD1] transition">
+        <Link href="/" className="inline-block bg-[#534AB7] text-white px-6 py-3 rounded-full font-bold hover:bg-[#A87FD1] btn-anim">
             العودة للرئيسية
           </Link>
       </div>
@@ -76,14 +76,14 @@ export default function Product() {
           <div className="flex flex-col gap-3">
             <button
               onClick={handleBuyNow}
-              className="w-full bg-[#534AB7] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#A87FD1] transition shadow-lg active:scale-[0.98]"
+              className="w-full bg-[#534AB7] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#A87FD1] btn-anim shadow-lg "
             >
               اشتري الآن
             </button>
 
             <button
               onClick={handleAdd}
-              className={`w-full py-4 rounded-2xl font-bold text-lg transition shadow active:scale-[0.98] border-2 ${added ? "bg-green-100 text-green-700 border-green-300" : "bg-white text-[#534AB7] border-[#C8A8E9] hover:bg-[#EDE0F7]"}`}
+              className={`w-full py-4 rounded-2xl font-bold text-lg transition shadow  border-2 ${added ? "bg-green-100 text-green-700 border-green-300" : "bg-white text-[#534AB7] border-[#C8A8E9] hover:bg-[#EDE0F7]"}`}
             >
               {added ? "✓ تمت الإضافة للسلة" : "أضف إلى السلة"}
             </button>
@@ -92,7 +92,7 @@ export default function Product() {
               href={`https://wa.me/${WHATSAPP_PHONE}?text=${whatsappText}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#1da851] transition shadow flex items-center justify-center gap-2 active:scale-[0.98]"
+              className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#1da851] btn-anim shadow flex items-center justify-center gap-2 "
             >
               <span>اطلب عبر واتساب</span>
               <span>💬</span>

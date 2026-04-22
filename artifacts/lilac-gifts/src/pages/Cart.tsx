@@ -10,7 +10,7 @@ export default function Cart() {
         <div className="text-7xl mb-4">🛍️</div>
         <h2 className="text-2xl font-bold text-[#534AB7] mb-2">سلتك فارغة</h2>
         <p className="text-[#A87FD1] mb-6">لم تقومي بإضافة أي منتجات بعد</p>
-        <Link href="/" className="inline-block bg-[#534AB7] text-white px-8 py-3 rounded-full font-bold hover:bg-[#A87FD1] transition">
+        <Link href="/" className="inline-block bg-[#534AB7] text-white px-8 py-3 rounded-full font-bold hover:bg-[#A87FD1] btn-anim">
             تصفحي المنتجات
           </Link>
       </div>
@@ -25,7 +25,7 @@ export default function Cart() {
         {items.map(({ product, qty }) => (
           <div
             key={product.id}
-            className="flex flex-col sm:flex-row gap-4 bg-white border border-[#EDE0F7] rounded-2xl p-4 hover:border-[#C8A8E9] transition"
+            className="flex flex-col sm:flex-row gap-4 bg-white border border-[#EDE0F7] rounded-2xl p-4 hover:border-[#C8A8E9] btn-anim"
           >
             <Link href={`/product/${product.id}`} className="block w-full sm:w-28 h-28 bg-[#EDE0F7] rounded-xl overflow-hidden flex-shrink-0">
                 <img src={product.img} alt={product.name} className="w-full h-full object-cover" />
@@ -39,7 +39,7 @@ export default function Cart() {
                 <div className="flex items-center gap-2 bg-[#EDE0F7] rounded-full p-1">
                   <button
                     onClick={() => updateQty(product.id, qty - 1)}
-                    className="w-8 h-8 rounded-full bg-white text-[#534AB7] font-bold hover:bg-[#C8A8E9] hover:text-white transition"
+                    className="w-8 h-8 rounded-full bg-white text-[#534AB7] font-bold hover:bg-[#C8A8E9] hover:text-white btn-anim"
                     aria-label="إنقاص"
                   >
                     −
@@ -47,7 +47,7 @@ export default function Cart() {
                   <span className="w-8 text-center font-bold text-[#534AB7]">{qty}</span>
                   <button
                     onClick={() => updateQty(product.id, qty + 1)}
-                    className="w-8 h-8 rounded-full bg-white text-[#534AB7] font-bold hover:bg-[#C8A8E9] hover:text-white transition"
+                    className="w-8 h-8 rounded-full bg-white text-[#534AB7] font-bold hover:bg-[#C8A8E9] hover:text-white btn-anim"
                     aria-label="زيادة"
                   >
                     +
@@ -75,15 +75,15 @@ export default function Cart() {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <Link href="/checkout" className="flex-1 text-center bg-[#534AB7] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#A87FD1] transition shadow-lg">
+        <Link href="/checkout" className="flex-1 text-center bg-[#534AB7] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#A87FD1] btn-anim shadow-lg">
             إتمام الطلب
           </Link>
-        <Link href="/" className="flex-1 text-center bg-white border-2 border-[#C8A8E9] text-[#534AB7] py-4 rounded-2xl font-bold text-lg hover:bg-[#EDE0F7] transition">
+        <Link href="/" className="flex-1 text-center bg-white border-2 border-[#C8A8E9] text-[#534AB7] py-4 rounded-2xl font-bold text-lg hover:bg-[#EDE0F7] btn-anim">
             متابعة التسوق
           </Link>
         <button
           onClick={clear}
-          className="sm:w-auto px-6 py-4 rounded-2xl font-bold text-red-500 hover:bg-red-50 transition"
+          className="sm:w-auto px-6 py-4 rounded-2xl font-bold text-red-500 hover:bg-red-50 btn-anim"
         >
           إفراغ السلة
         </button>

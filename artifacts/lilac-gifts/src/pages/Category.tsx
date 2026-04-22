@@ -12,7 +12,7 @@ export default function Category() {
       <div className="max-w-6xl mx-auto px-4 py-20 text-center">
         <div className="text-6xl mb-4">🤷‍♀️</div>
         <h2 className="text-2xl font-bold text-[#534AB7] mb-4">القسم غير موجود</h2>
-        <Link href="/" className="inline-block bg-[#534AB7] text-white px-6 py-3 rounded-full font-bold hover:bg-[#A87FD1] transition">
+        <Link href="/" className="inline-block bg-[#534AB7] text-white px-6 py-3 rounded-full font-bold hover:bg-[#A87FD1] btn-anim">
             العودة للرئيسية
           </Link>
       </div>
