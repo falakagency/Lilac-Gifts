@@ -1,0 +1,57 @@
+Build a complete Arabic RTL e-commerce website using React + Vite + Tailwind CSS.
+
+## Project: Lilac Gifts — Jordan
+A gift store selling customized gift sets for occasions.
+
+## Tech Stack
+- React 18 + Vite
+- Tailwind CSS
+- React Router (for pages)
+- All text in Arabic, RTL direction
+- Font: Cairo (import from Google Fonts)
+- Color palette: White (#FFFFFF) + Soft Lilac (#C8A8E9) + Light Purple (#EDE0F7)
+
+## Product Data (hardcode this)
+const categories = [
+  { id:1, name:"التخرج", icon:"🎓", products:[
+    { id:101, name:"طقم تخرج أمن عام", price:"15 د.أ", desc:"طقم هدايا مخصص لمناسبة التخرج", img:"https://placehold.co/300x300/EDE0F7/534AB7?text=تخرج" },
+    { id:102, name:"طقم تخرج جامعي", price:"20 د.أ", desc:"هدية أنيقة للخريجين الجدد", img:"https://placehold.co/300x300/EDE0F7/534AB7?text=جامعة" }
+  ]},
+  { id:2, name:"ترفيعات عسكرية", icon:"⭐", products:[
+    { id:201, name:"طقم ترفيع ضابط", price:"25 د.أ", desc:"تهانٍ بالرتبة الجديدة", img:"https://placehold.co/300x300/EDE0F7/534AB7?text=ترفيع" }
+  ]},
+  { id:3, name:"يوم الأم", icon:"🌸", products:[
+    { id:301, name:"طقم يوم الأم الكلاسيكي", price:"18 د.أ", desc:"أجمل هدية لأحن الأمهات", img:"https://placehold.co/300x300/EDE0F7/534AB7?text=الأم" }
+  ]},
+  { id:4, name:"رمضان وعيد الفطر", icon:"🌙", products:[
+    { id:401, name:"طقم رمضان الفاخر", price:"22 د.أ", desc:"إضاءة بيتك بنكهة رمضان", img:"https://placehold.co/300x300/EDE0F7/534AB7?text=رمضان" }
+  ]},
+  { id:5, name:"دلات وفناجين", icon:"☕", products:[
+    { id:501, name:"دلة بطباعة مخصصة", price:"30 د.أ", desc:"اطبع اسمك أو صورتك", img:"https://placehold.co/300x300/EDE0F7/534AB7?text=دلة" }
+  ]}
+];
+
+## Pages (use React Router)
+1. "/" — Home: Hero section + categories grid + featured products
+2. "/category/:id" — Category page: products grid
+3. "/product/:id" — Product detail: big image + name + desc + buttons
+4. "/cart" — Cart: list of items + checkout button
+5. "/checkout" — Form: name, phone, notes + confirm button
+
+## WhatsApp Integration
+Phone number: 962781747824
+On checkout confirm, open:
+https://wa.me/962781747824?text=طلب+جديد%0A...
+
+## Features
+- Cart state managed with React Context (localStorage to persist)
+- Floating WhatsApp button (fixed bottom-right, z-50)
+- "اطلب عبر واتساب" on every product page
+- Responsive (mobile-first)
+- Soft rounded cards with lilac hover effect
+
+## Important
+- No login system
+- Arabic text only
+- All buttons large (py-3 minimum)
+- RTL: dir="rtl" on html tag
