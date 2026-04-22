@@ -1,9 +1,21 @@
+import { useState } from "react";
 import { Link } from "wouter";
-import { categories, allProducts } from "../data";
+import {
+  categories,
+  allProducts,
+  bestsellerProducts,
+  filterByBudget,
+  type BudgetFilterValue,
+} from "../data";
 import ProductCard from "../components/ProductCard";
+import BudgetFilter from "../components/BudgetFilter";
 
 export default function Home() {
-  const featured = allProducts.slice(0, 4);
+  const [budget, setBudget] = useState<BudgetFilterValue>("all");
+
+  const filtered = filterByBudget(allProducts, budget);
+  const featured = filtered.slice(0, 4);
+  const bestsellers = bestsellerProducts.slice(0, 4);
 
   return (
     <div>
@@ -57,20 +69,52 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured */}
-      <section className="bg-[#EDE0F7]/40 py-16">
+      {/* Most Ordered (Bestsellers) */}
+      <section className="bg-gradient-to-bl from-[#EDE0F7]/70 to-white py-16">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-10 fade-up">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] mb-2">الأكثر طلباً</h2>
-            <p className="text-[#A87FD1]">اختياراتنا المميزة لك</p>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] mb-2">
+              الأكثر طلباً 🔥
+            </h2>
+            <p className="text-[#A87FD1]">المنتجات التي يحبها عملاؤنا أكثر</p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {featured.map((p, i) => (
+            {bestsellers.map((p, i) => (
               <div key={p.id} className="fade-up" style={{ animationDelay: `${i * 100}ms` }}>
                 <ProductCard product={p} />
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Featured with budget filter */}
+      <section className="bg-[#EDE0F7]/40 py-16">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-6 fade-up">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] mb-2">تسوق حسب الميزانية</h2>
+            <p className="text-[#A87FD1]">اختاري ميزانيتك وستجدين الهدية المناسبة</p>
+          </div>
+
+          <BudgetFilter value={budget} onChange={setBudget} />
+
+          {featured.length === 0 ? (
+            <div className="text-center py-12 text-[#A87FD1] fade-up">
+              <div className="text-4xl mb-2">🌷</div>
+              لا توجد منتجات ضمن هذه الميزانية حالياً
+            </div>
+          ) : (
+            <div
+              key={budget}
+              className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
+            >
+              {featured.map((p, i) => (
+                <div key={p.id} className="fade-up" style={{ animationDelay: `${i * 80}ms` }}>
+                  <ProductCard product={p} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

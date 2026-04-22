@@ -5,8 +5,13 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/product/${product.id}`}
-      className="group block bg-white rounded-3xl border border-[#EDE0F7] overflow-hidden shadow-sm card-anim hover:border-[#C8A8E9]"
+      className="group block bg-white rounded-3xl border border-[#EDE0F7] overflow-hidden shadow-sm card-anim hover:border-[#C8A8E9] relative"
     >
+      {product.bestseller && (
+        <span className="absolute top-3 right-3 z-10 bg-gradient-to-bl from-[#534AB7] to-[#A87FD1] text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md">
+          الأكثر طلباً 🔥
+        </span>
+      )}
       <div className="aspect-square bg-[#EDE0F7] overflow-hidden">
         <img
           src={product.img}
