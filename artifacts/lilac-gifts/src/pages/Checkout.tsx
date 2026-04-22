@@ -33,7 +33,7 @@ export default function Checkout() {
     if (Object.keys(errs).length > 0) return;
 
     const lines = [
-      "🎁 طلب جديد من ليلاك جيفتس",
+      "🎁 طلب جديد من Lilac Gifts",
       "",
       `👤 الاسم: ${name}`,
       `📱 الهاتف: ${phone}`,

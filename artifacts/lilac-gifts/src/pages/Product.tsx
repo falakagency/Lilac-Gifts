@@ -36,7 +36,7 @@ export default function Product() {
   };
 
   const whatsappText = encodeURIComponent(
-    `مرحباً ليلاك جيفتس 🌸\nأرغب بطلب:\n• ${product.name}\nالسعر: ${product.price}\nالرابط: ${window.location.href}`,
+    `مرحباً Lilac Gifts 🌸\nأرغب بطلب:\n• ${product.name}\nالسعر: ${product.price}\nالرابط: ${window.location.href}`,
   );
 
   return (

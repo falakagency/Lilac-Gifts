@@ -2,6 +2,7 @@ import { Link, useLocation } from "wouter";
 import { type ReactNode } from "react";
 import { useCart } from "../cart";
 import { WHATSAPP_PHONE } from "../data";
+import logoUrl from "@assets/image_1776889101826.png";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const { totalCount } = useCart();
@@ -11,13 +12,15 @@ export default function Layout({ children }: { children: ReactNode }) {
     <div className="min-h-screen flex flex-col bg-white">
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-[#EDE0F7]">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#C8A8E9] to-[#A87FD1] flex items-center justify-center text-white text-lg shadow-md group-hover:scale-105 transition">
-                🎁
-              </div>
+          <Link href="/" className="flex items-center gap-3 group">
+              <img
+                src={logoUrl}
+                alt="Lilac Gifts"
+                className="w-12 h-12 rounded-full object-cover bg-white shadow-md ring-2 ring-[#EDE0F7] group-hover:scale-105 transition"
+              />
               <div className="flex flex-col leading-tight">
-                <span className="font-extrabold text-lg text-[#534AB7]">ليلاك جيفتس</span>
-                <span className="text-xs text-[#A87FD1]">هدايا مميزة للمناسبات</span>
+                <span className="font-extrabold text-lg text-[#534AB7]">Lilac Gifts</span>
+                <span className="text-xs text-[#A87FD1]">Make your event unforgettable</span>
               </div>
             </Link>
 
@@ -42,11 +45,11 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       <footer className="mt-16 bg-[#EDE0F7] border-t border-[#C8A8E9]/40">
         <div className="max-w-6xl mx-auto px-4 py-8 text-center text-[#534AB7]">
-          <div className="text-2xl mb-2">🎀</div>
-          <div className="font-bold text-lg">ليلاك جيفتس — الأردن</div>
+          <img src={logoUrl} alt="Lilac Gifts" className="w-16 h-16 rounded-full mx-auto mb-3 bg-white shadow ring-2 ring-[#C8A8E9]/40" />
+          <div className="font-bold text-lg">Lilac Gifts — الأردن</div>
           <div className="text-sm mt-2 text-[#A87FD1]">هدايا مخصصة بحب لكل المناسبات</div>
           <div className="text-xs mt-4 text-[#A87FD1]">
-            © {new Date().getFullYear()} ليلاك جيفتس. جميع الحقوق محفوظة.
+            © {new Date().getFullYear()} Lilac Gifts. جميع الحقوق محفوظة.
           </div>
         </div>
       </footer>
