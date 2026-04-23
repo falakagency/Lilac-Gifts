@@ -70,39 +70,20 @@ export default function Checkout() {
     });
 
     const lines = [
-      "🎁 طلب جديد من Lilac Gifts",
-      `🔖 رقم الطلب: ${orderNumber}`,
-      `📅 التاريخ: ${dateStr} - ${timeStr}`,
-      "",
-      `👤 الاسم: ${name}`,
-      `📱 الهاتف: ${phone}`,
+      "🎁 طلب جديد - Lilac Gifts",
+      `📅 ${dateStr} - ${timeStr}`,
+      `👤 ${name}`,
+      `📱 ${phone}`,
       "",
       "🛒 المنتجات:",
-      ...items.map(
-        ({ product, qty }) => `• ${product.name} × ${qty} — ${product.price}`,
-      ),
+      ...items.map(({ product, qty }) => `• ${product.name} × ${qty}`),
       "",
-      `🚚 التوصيل: ${deliveryOption.label} — ${fmt(deliveryOption.cost)}`,
-      `💵 المجموع الفرعي: ${fmt(subtotal)}`,
+      `🚚 ${deliveryOption.label}`,
+      `💳 ${payment === "cliq" ? "كلك" : "كاش عند الاستلام"}`,
       `💰 المجموع الكلي: ${fmt(total)}`,
       "",
+      "🌐 Lilac Gifts",
     ];
-    if (payment === "cliq") {
-      lines.push(
-        `💳 الدفع: كلك`,
-        `   • رقم الكلك: ${CLIQ.number}`,
-        `   • الاسم: ${CLIQ.name}`,
-        `   • البنك: ${CLIQ.bank}`,
-      );
-    } else {
-      lines.push(`💵 الدفع: كاش عند الاستلام`);
-    }
-    if (notes.trim()) {
-      lines.push("", `💌 بطاقة التهنئة / ملاحظات: ${notes}`);
-    }
-    if (payment === "cliq") {
-      lines.push("", "📸 سيتم إرسال صورة الحوالة للتأكيد.");
-    }
 
     const text = encodeURIComponent(lines.join("\n"));
     const url = `https://wa.me/${WHATSAPP_PHONE}?text=${text}`;
