@@ -1,3 +1,5 @@
+import amnAamGraduationImg from "@assets/WhatsApp_Image_2026-04-23_at_8.13.32_PM_1776964703507.jpeg";
+
 export type Product = {
   id: number;
   name: string;
@@ -22,7 +24,7 @@ export const categories: Category[] = [
     name: "التخرج",
     icon: "🎓",
     products: [
-      { id: 101, name: "طقم تخرج أمن عام", price: "15 د.أ", desc: "طقم هدايا مخصص لمناسبة التخرج", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=تخرج", bestseller: true, rating: 4.8, reviews: 47 },
+      { id: 101, name: "طقم تخرج أمن عام", price: "15 د.أ", desc: "طقم هدايا مخصص لمناسبة التخرج، مع طباعة اسم الخريج", img: amnAamGraduationImg, bestseller: true, rating: 4.8, reviews: 47 },
       { id: 102, name: "طقم تخرج جامعي", price: "20 د.أ", desc: "هدية أنيقة للخريجين الجدد", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=جامعة", bestseller: true, rating: 4.9, reviews: 63 },
     ],
   },
