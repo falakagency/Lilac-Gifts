@@ -91,9 +91,13 @@ export default function Confirmation() {
       <div className="bg-white dark:bg-[#16213e] rounded-3xl border-2 border-[#EDE0F7] dark:border-[#2a2f4a] p-8 sm:p-10 text-center shadow-sm fade-up">
         <div className="text-7xl mb-4 float-slow">🎉</div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-3">
-          تم استلام طلبك بنجاح
+          ✅ تم استلام طلبك بنجاح
         </h1>
-        <p className="text-[#A87FD1] mb-8">شكراً لاختياركِ Lilac Gifts 🌸</p>
+        <p className="text-[#A87FD1] mb-2">شكراً لاختياركِ Lilac Gifts 🌸</p>
+        <p className="text-[#534AB7] dark:text-[#C8A8E9] mb-8">
+          سنتواصل معكِ قريباً على رقم:{" "}
+          <span dir="ltr" className="font-bold tracking-wider">{order.phone}</span>
+        </p>
 
         <div className="bg-[#EDE0F7] dark:bg-[#1a1a2e] rounded-2xl p-5 mb-6 border border-[#C8A8E9]/40 dark:border-[#2a2f4a]">
           <div className="text-sm text-[#A87FD1] mb-1">رقم الطلب</div>

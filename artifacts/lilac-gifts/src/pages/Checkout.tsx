@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { useCart } from "../cart";
-import { WHATSAPP_PHONE, FORMSPREE_ENDPOINT } from "../data";
+import { FORMSPREE_ENDPOINT } from "../data";
 
 type DeliveryKey = "city" | "village";
 
@@ -85,9 +85,6 @@ export default function Checkout() {
       "🌐 Lilac Gifts",
     ];
 
-    const text = encodeURIComponent(lines.join("\n"));
-    const url = `https://wa.me/${WHATSAPP_PHONE}?text=${text}`;
-
     const productsText = items
       .map(({ product, qty }) => `${product.name} × ${qty} (${product.price})`)
       .join(" | ");
@@ -152,7 +149,6 @@ export default function Checkout() {
     }
 
     clear();
-    window.open(url, "_blank", "noopener,noreferrer");
     navigate("/confirmation");
   };
 
