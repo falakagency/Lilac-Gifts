@@ -7,6 +7,7 @@ import Category from "./pages/Category";
 import Product from "./pages/Product";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import Confirmation from "./pages/Confirmation";
 import Track from "./pages/Track";
 import NotFound from "./pages/NotFound";
 
@@ -18,6 +19,7 @@ function Routes() {
       <Route path="/product/:id" component={Product} />
       <Route path="/cart" component={Cart} />
       <Route path="/checkout" component={Checkout} />
+      <Route path="/confirmation" component={Confirmation} />
       <Route path="/track" component={Track} />
       <Route component={NotFound} />
     </Switch>

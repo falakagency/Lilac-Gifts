@@ -32,8 +32,22 @@ export default function Checkout() {
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
 
+    const orderNumber = `#LG-${Math.floor(1000 + Math.random() * 9000)}`;
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("ar-JO", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const timeStr = now.toLocaleTimeString("ar-JO", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
     const lines = [
       "🎁 طلب جديد من Lilac Gifts",
+      `🔖 رقم الطلب: ${orderNumber}`,
+      `📅 التاريخ: ${dateStr} - ${timeStr}`,
       "",
       `👤 الاسم: ${name}`,
       `📱 الهاتف: ${phone}`,
@@ -46,14 +60,30 @@ export default function Checkout() {
       `💰 المجموع: ${totalPriceText}`,
     ];
     if (notes.trim()) {
-      lines.push("", `📝 ملاحظات: ${notes}`);
+      lines.push("", `💌 بطاقة التهنئة / ملاحظات: ${notes}`);
     }
 
     const text = encodeURIComponent(lines.join("\n"));
     const url = `https://wa.me/${WHATSAPP_PHONE}?text=${text}`;
+
+    try {
+      sessionStorage.setItem(
+        "lilac-last-order",
+        JSON.stringify({
+          number: orderNumber,
+          name,
+          phone,
+          total: totalPriceText,
+          createdAt: now.toISOString(),
+        }),
+      );
+    } catch {
+      // ignore storage errors
+    }
+
     clear();
     window.open(url, "_blank", "noopener,noreferrer");
-    navigate("/");
+    navigate("/confirmation");
   };
 
   const inputBase = "w-full bg-white dark:bg-[#1a1a2e] text-[#2A1F3D] dark:text-[#eee] border-2 rounded-2xl px-4 py-3 text-lg outline-none focus:border-[#534AB7] dark:focus:border-[#C8A8E9] transition";
