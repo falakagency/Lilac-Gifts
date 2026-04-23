@@ -1,5 +1,5 @@
 import { Link, useParams, useLocation } from "wouter";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { findProduct, findCategoryByProduct, WHATSAPP_PHONE } from "../data";
 import { useCart } from "../cart";
 import Stars from "../components/Stars";
@@ -16,6 +16,7 @@ export default function Product() {
   const [, navigate] = useLocation();
   const [added, setAdded] = useState(false);
   const [greeting, setGreeting] = useState("");
+  const addBtnRef = useRef<HTMLButtonElement | null>(null);
 
   if (!product) {
     return (
@@ -33,6 +34,46 @@ export default function Product() {
     addItem(product, 1);
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
+
+    const confetti = (window as unknown as { confetti?: (opts: Record<string, unknown>) => void }).confetti;
+    if (confetti) {
+      const btn = addBtnRef.current;
+      const colors = ["#C8A8E9", "#534AB7", "#EDE0F7", "#ffffff"];
+      let origin: { x: number; y: number } = { x: 0.5, y: 0.6 };
+      if (btn) {
+        const rect = btn.getBoundingClientRect();
+        origin = {
+          x: (rect.left + rect.width / 2) / window.innerWidth,
+          y: (rect.top + rect.height / 2) / window.innerHeight,
+        };
+      }
+      const duration = 1500;
+      const end = Date.now() + duration;
+      confetti({
+        particleCount: 80,
+        spread: 75,
+        startVelocity: 45,
+        origin,
+        colors,
+        scalar: 1.05,
+        zIndex: 9999,
+      });
+      const interval = window.setInterval(() => {
+        if (Date.now() > end) {
+          window.clearInterval(interval);
+          return;
+        }
+        confetti({
+          particleCount: 18,
+          spread: 60,
+          startVelocity: 30,
+          origin,
+          colors,
+          scalar: 0.9,
+          zIndex: 9999,
+        });
+      }, 220);
+    }
   };
 
   const handleBuyNow = () => {
@@ -101,6 +142,7 @@ export default function Product() {
             </button>
 
             <button
+              ref={addBtnRef}
               onClick={handleAdd}
               className={`w-full py-4 rounded-2xl font-bold text-lg btn-anim shadow border-2 ${
                 added

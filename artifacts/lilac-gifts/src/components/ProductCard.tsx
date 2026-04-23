@@ -9,9 +9,9 @@ export default function ProductCard({ product }: { product: Product }) {
       className="group block bg-white dark:bg-[#16213e] rounded-3xl border border-[#EDE0F7] dark:border-[#2a2f4a] overflow-hidden shadow-sm card-anim hover:border-[#C8A8E9] relative"
     >
       {product.bestseller && (
-        <span className="absolute top-3 right-3 z-10 bg-gradient-to-bl from-[#534AB7] to-[#A87FD1] text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-md">
-          الأكثر طلباً 🔥
-        </span>
+        <div className="bestseller-ribbon" aria-label="الأكثر طلباً">
+          <span className="bestseller-ribbon__text">الأكثر طلباً</span>
+        </div>
       )}
       <div className="aspect-square bg-[#EDE0F7] dark:bg-[#1a1a2e] overflow-hidden">
         <img

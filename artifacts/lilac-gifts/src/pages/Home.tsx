@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import {
   categories,
@@ -11,8 +11,36 @@ import ProductCard from "../components/ProductCard";
 import BudgetFilter from "../components/BudgetFilter";
 import CountdownCard from "../components/CountdownCard";
 
+const HERO_TEXT = "هدايا مخصصة لكل مناسبة";
+const TYPE_SPEED = 80;
+const CURSOR_HIDE_DELAY = 2000;
+
+function useTypewriter(text: string) {
+  const [shown, setShown] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+
+  useEffect(() => {
+    setShown("");
+    setShowCursor(true);
+    let i = 0;
+    const chars = Array.from(text);
+    const id = window.setInterval(() => {
+      i += 1;
+      setShown(chars.slice(0, i).join(""));
+      if (i >= chars.length) {
+        window.clearInterval(id);
+        window.setTimeout(() => setShowCursor(false), CURSOR_HIDE_DELAY);
+      }
+    }, TYPE_SPEED);
+    return () => window.clearInterval(id);
+  }, [text]);
+
+  return { shown, showCursor };
+}
+
 export default function Home() {
   const [budget, setBudget] = useState<BudgetFilterValue>("all");
+  const { shown: heroText, showCursor: heroCursor } = useTypewriter(HERO_TEXT);
 
   const filtered = filterByBudget(allProducts, budget);
   const featured = filtered.slice(0, 4);
@@ -24,8 +52,12 @@ export default function Home() {
       <section className="relative overflow-hidden bg-gradient-to-bl from-[#EDE0F7] via-white to-[#EDE0F7] dark:from-[#16213e] dark:via-[#1a1a2e] dark:to-[#16213e]">
         <div className="max-w-6xl mx-auto px-4 py-16 sm:py-24 text-center">
           <div className="inline-block text-5xl mb-4 fade-up">🎁🌸</div>
-          <h1 className="text-4xl sm:text-6xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-4 leading-tight slide-in-right">
-            هدايا تحكي مشاعرك
+          <h1 className="text-4xl sm:text-6xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-4 leading-tight min-h-[1.2em]">
+            <span>{heroText}</span>
+            <span
+              aria-hidden="true"
+              className={`typewriter-cursor ${heroCursor ? "" : "typewriter-cursor--hidden"}`}
+            />
           </h1>
           <p className="text-lg sm:text-xl text-[#A87FD1] max-w-2xl mx-auto mb-8 leading-relaxed fade-up delay-200">
             مجموعات هدايا مخصصة لكل مناسبة — من التخرج والترفيعات إلى يوم الأم ورمضان. اطلب عبر واتساب وسنوصلها لك في الأردن.

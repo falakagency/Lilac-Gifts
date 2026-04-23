@@ -153,3 +153,77 @@ body, header, footer, main, section, aside, div, button, a, input, textarea, spa
     animation: fadeIn 0.4s ease-out both;
   }
 }
+
+/* ===================== Typewriter cursor ===================== */
+
+@keyframes blinkCursor {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.95em;
+  margin-inline-start: 8px;
+  margin-inline-end: 2px;
+  vertical-align: -0.12em;
+  background: currentColor;
+  border-radius: 2px;
+  animation: blinkCursor 0.6s steps(1) infinite;
+  transition: opacity 0.3s ease;
+}
+
+.typewriter-cursor--hidden {
+  opacity: 0;
+  animation: none;
+}
+
+/* ===================== Bestseller ribbon ===================== */
+
+@keyframes ribbonShimmer {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  60%, 100% { transform: translateX(250%) skewX(-20deg); }
+}
+
+.bestseller-ribbon {
+  position: absolute;
+  top: 22px;
+  left: -55px;
+  width: 200px;
+  transform: rotate(-45deg);
+  background: linear-gradient(135deg, #534AB7 0%, #6e63d6 50%, #534AB7 100%);
+  color: #fff;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  z-index: 10;
+  box-shadow: 0 6px 14px -4px rgba(83, 74, 183, 0.55);
+  overflow: hidden;
+  white-space: nowrap;
+  direction: rtl;
+}
+
+.bestseller-ribbon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 35%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0) 65%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: ribbonShimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.bestseller-ribbon__text {
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
