@@ -3,12 +3,31 @@ import { useState } from "react";
 import { useCart } from "../cart";
 import { WHATSAPP_PHONE } from "../data";
 
+type DeliveryKey = "city" | "village";
+
+const DELIVERY_OPTIONS: Array<{
+  key: DeliveryKey;
+  label: string;
+  cost: number;
+  desc: string;
+}> = [
+  { key: "city", label: "داخل المدن الرئيسية", cost: 3, desc: "عمّان، الزرقاء، إربد، السلط، مادبا" },
+  { key: "village", label: "داخل القرى البعيدة", cost: 4, desc: "باقي المناطق والقرى" },
+];
+
+const CLIQ = {
+  number: "0781169255",
+  name: "دينا زهير الابطح",
+  bank: "العربي الإسلامي",
+};
+
 export default function Checkout() {
-  const { items, totalPriceText, clear } = useCart();
+  const { items, totalPriceNumber, clear } = useCart();
   const [, navigate] = useLocation();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
+  const [delivery, setDelivery] = useState<DeliveryKey>("city");
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
 
   if (items.length === 0) {
@@ -23,6 +42,11 @@ export default function Checkout() {
       </div>
     );
   }
+
+  const deliveryOption = DELIVERY_OPTIONS.find((d) => d.key === delivery)!;
+  const subtotal = totalPriceNumber;
+  const total = subtotal + deliveryOption.cost;
+  const fmt = (n: number) => `${n.toFixed(2)} د.أ`;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,11 +81,19 @@ export default function Checkout() {
         ({ product, qty }) => `• ${product.name} × ${qty} — ${product.price}`,
       ),
       "",
-      `💰 المجموع: ${totalPriceText}`,
+      `🚚 التوصيل: ${deliveryOption.label} — ${fmt(deliveryOption.cost)}`,
+      `💵 المجموع الفرعي: ${fmt(subtotal)}`,
+      `💰 المجموع الكلي: ${fmt(total)}`,
+      "",
+      `💳 طريقة الدفع: كلك`,
+      `   • رقم الكلك: ${CLIQ.number}`,
+      `   • الاسم: ${CLIQ.name}`,
+      `   • البنك: ${CLIQ.bank}`,
     ];
     if (notes.trim()) {
       lines.push("", `💌 بطاقة التهنئة / ملاحظات: ${notes}`);
     }
+    lines.push("", "📸 سيتم إرسال صورة الحوالة للتأكيد.");
 
     const text = encodeURIComponent(lines.join("\n"));
     const url = `https://wa.me/${WHATSAPP_PHONE}?text=${text}`;
@@ -73,12 +105,15 @@ export default function Checkout() {
           number: orderNumber,
           name,
           phone,
-          total: totalPriceText,
+          total: fmt(total),
+          subtotal: fmt(subtotal),
+          delivery: deliveryOption.label,
+          deliveryCost: fmt(deliveryOption.cost),
           createdAt: now.toISOString(),
         }),
       );
     } catch {
-      // ignore storage errors
+      // ignore
     }
 
     clear();
@@ -86,7 +121,8 @@ export default function Checkout() {
     navigate("/confirmation");
   };
 
-  const inputBase = "w-full bg-white dark:bg-[#1a1a2e] text-[#2A1F3D] dark:text-[#eee] border-2 rounded-2xl px-4 py-3 text-lg outline-none focus:border-[#534AB7] dark:focus:border-[#C8A8E9] transition";
+  const inputBase =
+    "w-full bg-white dark:bg-[#1a1a2e] text-[#2A1F3D] dark:text-[#eee] border-2 rounded-2xl px-4 py-3 text-lg outline-none focus:border-[#534AB7] dark:focus:border-[#C8A8E9] transition";
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
@@ -117,6 +153,80 @@ export default function Checkout() {
               className={`${inputBase} text-right ${errors.phone ? "border-red-400" : "border-[#EDE0F7] dark:border-[#2a2f4a]"}`}
             />
             {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+          </div>
+
+          {/* Delivery Options */}
+          <div>
+            <label className="block text-[#534AB7] dark:text-[#C8A8E9] font-bold mb-3">
+              🚚 اختاري طريقة التوصيل
+            </label>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {DELIVERY_OPTIONS.map((opt) => {
+                const active = delivery === opt.key;
+                return (
+                  <label
+                    key={opt.key}
+                    className={`cursor-pointer rounded-2xl border-2 p-4 btn-anim flex items-start gap-3 ${
+                      active
+                        ? "border-[#534AB7] bg-[#EDE0F7] dark:bg-[#2a2f4a] shadow-md"
+                        : "border-[#EDE0F7] dark:border-[#2a2f4a] bg-white dark:bg-[#16213e] hover:border-[#C8A8E9]"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="delivery"
+                      value={opt.key}
+                      checked={active}
+                      onChange={() => setDelivery(opt.key)}
+                      className="mt-1 accent-[#534AB7]"
+                    />
+                    <div className="flex-1">
+                      <div className="font-bold text-[#534AB7] dark:text-[#C8A8E9] flex justify-between gap-2">
+                        <span>{opt.label}</span>
+                        <span className="text-sm bg-[#534AB7] text-white px-2 py-0.5 rounded-full whitespace-nowrap">
+                          {opt.cost} د.أ
+                        </span>
+                      </div>
+                      <div className="text-xs text-[#A87FD1] mt-1">{opt.desc}</div>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Cliq Payment */}
+          <div className="rounded-2xl border-2 border-[#C8A8E9] dark:border-[#534AB7] bg-gradient-to-bl from-[#EDE0F7] via-white to-[#EDE0F7] dark:from-[#16213e] dark:via-[#1a1a2e] dark:to-[#16213e] p-5 shadow-sm">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">💳</span>
+              <h3 className="font-extrabold text-[#534AB7] dark:text-[#C8A8E9] text-lg">
+                الدفع عبر كلك (Cliq)
+              </h3>
+            </div>
+            <div className="space-y-2 bg-white/70 dark:bg-[#1a1a2e]/60 rounded-xl p-4 border border-[#C8A8E9]/40 dark:border-[#2a2f4a]">
+              <div className="flex justify-between gap-2 border-b border-[#EDE0F7] dark:border-[#2a2f4a] pb-2">
+                <span className="text-[#A87FD1] font-semibold text-sm">رقم الكلك</span>
+                <a
+                  href={`tel:${CLIQ.number}`}
+                  dir="ltr"
+                  className="font-bold text-[#534AB7] dark:text-[#C8A8E9] tracking-wider"
+                >
+                  {CLIQ.number}
+                </a>
+              </div>
+              <div className="flex justify-between gap-2 border-b border-[#EDE0F7] dark:border-[#2a2f4a] pb-2">
+                <span className="text-[#A87FD1] font-semibold text-sm">الاسم</span>
+                <span className="font-bold text-[#534AB7] dark:text-[#C8A8E9]">{CLIQ.name}</span>
+              </div>
+              <div className="flex justify-between gap-2">
+                <span className="text-[#A87FD1] font-semibold text-sm">البنك</span>
+                <span className="font-bold text-[#534AB7] dark:text-[#C8A8E9]">{CLIQ.bank}</span>
+              </div>
+            </div>
+            <p className="mt-3 text-sm text-[#534AB7] dark:text-[#C8A8E9] bg-[#C8A8E9]/30 dark:bg-[#2a2f4a] rounded-xl p-3 flex items-start gap-2">
+              <span className="text-lg">📸</span>
+              <span>بعد الدفع أرسل صورة الحوالة على واتساب لتأكيد الطلب.</span>
+            </p>
           </div>
 
           <div>
@@ -156,9 +266,19 @@ export default function Checkout() {
                 </div>
               ))}
             </div>
-            <div className="border-t border-[#C8A8E9]/40 dark:border-[#2a2f4a] pt-3 flex justify-between items-center">
-              <span className="text-[#534AB7] dark:text-[#C8A8E9] font-semibold">المجموع</span>
-              <span className="text-xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9]">{totalPriceText}</span>
+            <div className="border-t border-[#C8A8E9]/40 dark:border-[#2a2f4a] pt-3 space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-[#A87FD1]">المجموع الفرعي</span>
+                <span className="font-bold text-[#534AB7] dark:text-[#C8A8E9]">{fmt(subtotal)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#A87FD1]">🚚 التوصيل ({deliveryOption.label})</span>
+                <span className="font-bold text-[#534AB7] dark:text-[#C8A8E9]">{fmt(deliveryOption.cost)}</span>
+              </div>
+              <div className="flex justify-between items-center pt-2 border-t border-[#C8A8E9]/40 dark:border-[#2a2f4a]">
+                <span className="text-[#534AB7] dark:text-[#C8A8E9] font-semibold">المجموع الكلي</span>
+                <span className="text-xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9]">{fmt(total)}</span>
+              </div>
             </div>
           </div>
         </aside>

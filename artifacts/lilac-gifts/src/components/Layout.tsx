@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useCart } from "../cart";
-import { WHATSAPP_PHONE } from "../data";
+import { WHATSAPP_PHONE, CONTACT_PHONE_LOCAL, CONTACT_PHONE_INTL } from "../data";
 import { useTheme } from "../theme";
 import logoUrl from "@assets/image_1776889101826.png";
 
@@ -104,6 +104,27 @@ export default function Layout({ children }: { children: ReactNode }) {
           />
           <div className="font-bold text-lg">Lilac Gifts — الأردن</div>
           <div className="text-sm mt-2 text-[#A87FD1]">هدايا مخصصة بحب لكل المناسبات</div>
+
+          {/* Contact section */}
+          <div className="mt-5 inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 bg-white dark:bg-[#1a1a2e] rounded-2xl px-5 py-3 shadow-sm border border-[#C8A8E9]/40 dark:border-[#2a2f4a]">
+            <span className="text-sm text-[#A87FD1] font-semibold">📞 تواصلي معنا:</span>
+            <a
+              href={`tel:${CONTACT_PHONE_LOCAL}`}
+              dir="ltr"
+              className="font-bold text-[#534AB7] dark:text-[#C8A8E9] tracking-wider hover:underline"
+            >
+              {CONTACT_PHONE_LOCAL}
+            </a>
+            <a
+              href={`https://wa.me/${CONTACT_PHONE_INTL}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 bg-[#25D366] text-white text-sm font-bold px-3 py-1.5 rounded-full hover:bg-[#1da851] btn-anim"
+            >
+              <span>واتساب</span>
+              <span>💬</span>
+            </a>
+          </div>
 
           <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm">
             <Link href="/" className="hover:underline">الرئيسية</Link>

@@ -6,6 +6,7 @@ import Stars from "../components/Stars";
 import ShareButton from "../components/ShareButton";
 
 const GREETING_MAX = 150;
+const CUSTOM_MAX = 200;
 
 export default function Product() {
   const params = useParams();
@@ -16,6 +17,7 @@ export default function Product() {
   const [, navigate] = useLocation();
   const [added, setAdded] = useState(false);
   const [greeting, setGreeting] = useState("");
+  const [customization, setCustomization] = useState("");
   const addBtnRef = useRef<HTMLButtonElement | null>(null);
 
   if (!product) {
@@ -82,6 +84,7 @@ export default function Product() {
   };
 
   const greetingTrim = greeting.trim();
+  const customizationTrim = customization.trim();
   const whatsappLines = [
     "مرحباً Lilac Gifts 🌸",
     "أرغب بطلب:",
@@ -89,12 +92,16 @@ export default function Product() {
     `السعر: ${product.price}`,
     `الرابط: ${typeof window !== "undefined" ? window.location.href : ""}`,
   ];
+  if (customizationTrim) {
+    whatsappLines.push("", `✏️ تفاصيل التخصيص: ${customizationTrim}`);
+  }
   if (greetingTrim) {
     whatsappLines.push("", `💌 بطاقة التهنئة: ${greetingTrim}`);
   }
   const whatsappText = encodeURIComponent(whatsappLines.join("\n"));
 
   const remaining = GREETING_MAX - greeting.length;
+  const customRemaining = CUSTOM_MAX - customization.length;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -171,6 +178,37 @@ export default function Product() {
             </a>
 
             <ShareButton title={product.name} text={`${product.name} — ${product.price}`} />
+          </div>
+
+          {/* Product Customization */}
+          <div className="mt-8 bg-white dark:bg-[#16213e] rounded-2xl border-2 border-[#C8A8E9]/60 dark:border-[#2a2f4a] p-5 shadow-sm hover:border-[#534AB7] transition-colors duration-300 fade-up delay-150">
+            <h3 className="font-extrabold text-[#534AB7] dark:text-[#C8A8E9] text-lg flex items-center gap-2 mb-2">
+              <span>✏️</span>
+              <span>خصص منتجك</span>
+            </h3>
+            <p className="text-xs text-[#A87FD1] mb-3">
+              ما تكتبينه هنا سيُطبع على المنتج وسيضاف تلقائياً لطلب واتساب.
+            </p>
+            <textarea
+              value={customization}
+              onChange={(e) => setCustomization(e.target.value.slice(0, CUSTOM_MAX))}
+              placeholder="اكتب هنا ما تريد طباعته على المنتج (اسم، كلمة، تاريخ...)"
+              rows={3}
+              maxLength={CUSTOM_MAX}
+              className="w-full bg-[#EDE0F7]/30 dark:bg-[#1a1a2e] border-2 border-[#C8A8E9]/60 dark:border-[#2a2f4a] rounded-xl px-4 py-3 outline-none focus:border-[#534AB7] dark:focus:border-[#C8A8E9] focus:bg-white dark:focus:bg-[#1a1a2e] transition-all duration-300 resize-none text-[#2A1F3D] dark:text-[#eee]"
+            />
+            <div className="flex items-center justify-between mt-2">
+              <span className="text-xs text-[#A87FD1]">
+                {customizationTrim ? "✓ سيتم طباعتها على المنتج" : "اختياري"}
+              </span>
+              <span
+                className={`text-xs font-semibold ${
+                  customRemaining < 30 ? "text-[#A87FD1]" : "text-gray-400 dark:text-gray-500"
+                }`}
+              >
+                {customization.length} / {CUSTOM_MAX}
+              </span>
+            </div>
           </div>
 
           {/* Greeting Card */}

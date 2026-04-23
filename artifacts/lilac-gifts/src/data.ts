@@ -101,6 +101,8 @@ export function filterByBudget(products: Product[], budget: BudgetFilterValue): 
   });
 }
 
+export const CONTACT_PHONE_LOCAL = "0782859651";
+export const CONTACT_PHONE_INTL = "962782859651";
 export const WHATSAPP_PHONE = "962781747824";
 
 export type Occasion = {
