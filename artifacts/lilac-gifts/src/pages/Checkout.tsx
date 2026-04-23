@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { useCart } from "../cart";
-import { WHATSAPP_PHONE } from "../data";
+import { WHATSAPP_PHONE, FORMSPREE_ENDPOINT } from "../data";
 
 type DeliveryKey = "city" | "village";
 
@@ -87,6 +87,35 @@ export default function Checkout() {
 
     const text = encodeURIComponent(lines.join("\n"));
     const url = `https://wa.me/${WHATSAPP_PHONE}?text=${text}`;
+
+    const productsText = items
+      .map(({ product, qty }) => `${product.name} × ${qty} (${product.price})`)
+      .join(" | ");
+    const paymentLabel = payment === "cliq" ? "كلك" : "كاش عند الاستلام";
+
+    if (FORMSPREE_ENDPOINT && !FORMSPREE_ENDPOINT.endsWith("xxxxxxx")) {
+      fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          _subject: `طلب جديد ${orderNumber} - Lilac Gifts`,
+          orderNumber,
+          customerName: name,
+          customerPhone: phone,
+          products: productsText,
+          total: fmt(total),
+          delivery: deliveryOption.label,
+          payment: paymentLabel,
+          dateTime: `${dateStr} - ${timeStr}`,
+          message: lines.join("\n"),
+        }),
+      }).catch((err) => {
+        console.error("Formspree notification failed:", err);
+      });
+    }
 
     try {
       sessionStorage.setItem(
