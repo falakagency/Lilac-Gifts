@@ -10,6 +10,9 @@ import mom2 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.25_PM_(1)_1776965217
 import mom3 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.25_PM_(2)_1776965217835.jpeg";
 import promo1 from "@assets/WhatsApp_Image_2026-04-23_at_8.13.33_PM_(1)_1776965262160.jpeg";
 import promo2 from "@assets/WhatsApp_Image_2026-04-23_at_8.13.33_PM_(2)_1776965262162.jpeg";
+import ramadan1 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.26_PM_(2)_1776965296097.jpeg";
+import ramadan2 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.26_PM_1776965296099.jpeg";
+import ramadan3 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.25_PM_(3)_1776965296100.jpeg";
 
 export type Product = {
   id: number;
@@ -61,7 +64,7 @@ export const categories: Category[] = [
     name: "رمضان وعيد الفطر",
     icon: "🌙",
     products: [
-      { id: 401, name: "طقم رمضان الفاخر", price: "22 د.أ", desc: "إضاءة بيتك بنكهة رمضان", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=رمضان", rating: 4.6, reviews: 24 },
+      { id: 401, name: "طقم رمضان وعيد الفطر", price: "22 د.أ", desc: "بكجات هدايا رمضانية وعيدية فاخرة، تشمل سبحة، ماء زمزم، وبطاقات معايدة بتصميم مخصص", img: ramadan1, gallery: [ramadan1, ramadan2, ramadan3], rating: 4.6, reviews: 24 },
     ],
   },
   {
