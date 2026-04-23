@@ -8,6 +8,8 @@ import dallah3 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.24_PM_17769651180
 import mom1 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.25_PM_1776965217832.jpeg";
 import mom2 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.25_PM_(1)_1776965217833.jpeg";
 import mom3 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.25_PM_(2)_1776965217835.jpeg";
+import promo1 from "@assets/WhatsApp_Image_2026-04-23_at_8.13.33_PM_(1)_1776965262160.jpeg";
+import promo2 from "@assets/WhatsApp_Image_2026-04-23_at_8.13.33_PM_(2)_1776965262162.jpeg";
 
 export type Product = {
   id: number;
@@ -43,7 +45,7 @@ export const categories: Category[] = [
     name: "ترفيعات عسكرية",
     icon: "⭐",
     products: [
-      { id: 201, name: "طقم ترفيع ضابط", price: "25 د.أ", desc: "تهانٍ بالرتبة الجديدة", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=ترفيع", rating: 4.7, reviews: 31 },
+      { id: 201, name: "طقم ترفيع ضابط", price: "25 د.أ", desc: "طقم تهنئة فاخر بالرتبة الجديدة، مع طباعة الاسم والشعار العسكري بتصميم مخصص", img: promo1, gallery: [promo1, promo2], rating: 4.7, reviews: 31 },
     ],
   },
   {
