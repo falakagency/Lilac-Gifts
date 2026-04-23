@@ -93,28 +93,43 @@ export default function Checkout() {
       .join(" | ");
     const paymentLabel = payment === "cliq" ? "كلك" : "كاش عند الاستلام";
 
-    if (FORMSPREE_ENDPOINT && !FORMSPREE_ENDPOINT.endsWith("xxxxxxx")) {
+    if (!FORMSPREE_ENDPOINT || FORMSPREE_ENDPOINT.endsWith("xxxxxxx")) {
+      console.warn(
+        "[Formspree] Skipped: endpoint is not configured. Edit FORMSPREE_ENDPOINT in src/data.ts with your real form ID (e.g. https://formspree.io/f/abcd1234).",
+      );
+    } else {
+      const payload = {
+        _subject: `طلب جديد ${orderNumber} - Lilac Gifts`,
+        orderNumber,
+        customerName: name,
+        customerPhone: phone,
+        products: productsText,
+        total: fmt(total),
+        delivery: deliveryOption.label,
+        payment: paymentLabel,
+        dateTime: `${dateStr} - ${timeStr}`,
+        message: lines.join("\n"),
+      };
+      console.log("[Formspree] Sending order to", FORMSPREE_ENDPOINT, payload);
       fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({
-          _subject: `طلب جديد ${orderNumber} - Lilac Gifts`,
-          orderNumber,
-          customerName: name,
-          customerPhone: phone,
-          products: productsText,
-          total: fmt(total),
-          delivery: deliveryOption.label,
-          payment: paymentLabel,
-          dateTime: `${dateStr} - ${timeStr}`,
-          message: lines.join("\n"),
-        }),
-      }).catch((err) => {
-        console.error("Formspree notification failed:", err);
-      });
+        body: JSON.stringify(payload),
+      })
+        .then(async (res) => {
+          const body = await res.text();
+          if (res.ok) {
+            console.log("[Formspree] ✅ Order sent successfully", res.status, body);
+          } else {
+            console.error("[Formspree] ❌ Request failed", res.status, body);
+          }
+        })
+        .catch((err) => {
+          console.error("[Formspree] ❌ Network error:", err);
+        });
     }
 
     try {
