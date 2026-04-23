@@ -1,4 +1,7 @@
 import amnAamGraduationImg from "@assets/WhatsApp_Image_2026-04-23_at_8.13.32_PM_1776964703507.jpeg";
+import uniGrad1 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.28_PM_(2)_1776965067951.jpeg";
+import uniGrad2 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.28_PM_(3)_1776965067952.jpeg";
+import uniGrad3 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.28_PM_1776965067954.jpeg";
 
 export type Product = {
   id: number;
@@ -6,6 +9,7 @@ export type Product = {
   price: string;
   desc: string;
   img: string;
+  gallery?: string[];
   bestseller?: boolean;
   rating: number;
   reviews: number;
@@ -25,7 +29,7 @@ export const categories: Category[] = [
     icon: "🎓",
     products: [
       { id: 101, name: "طقم تخرج أمن عام", price: "15 د.أ", desc: "طقم هدايا مخصص لمناسبة التخرج، مع طباعة اسم الخريج", img: amnAamGraduationImg, bestseller: true, rating: 4.8, reviews: 47 },
-      { id: 102, name: "طقم تخرج جامعي", price: "20 د.أ", desc: "هدية أنيقة للخريجين الجدد", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=جامعة", bestseller: true, rating: 4.9, reviews: 63 },
+      { id: 102, name: "طقم تخرج جامعي", price: "20 د.أ", desc: "هدية أنيقة للخريجين الجدد، مع طباعة الاسم وسنة التخرج", img: uniGrad2, gallery: [uniGrad2, uniGrad1, uniGrad3], bestseller: true, rating: 4.9, reviews: 63 },
     ],
   },
   {

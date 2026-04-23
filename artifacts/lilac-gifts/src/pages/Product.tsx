@@ -1,5 +1,5 @@
 import { Link, useParams, useLocation } from "wouter";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { findProduct, findCategoryByProduct, WHATSAPP_PHONE } from "../data";
 import { useCart } from "../cart";
 import Stars from "../components/Stars";
@@ -7,6 +7,75 @@ import ShareButton from "../components/ShareButton";
 
 const GREETING_MAX = 150;
 const CUSTOM_MAX = 200;
+
+function ProductGallery({ product }: { product: import("../data").Product }) {
+  const images = product.gallery && product.gallery.length > 0 ? product.gallery : [product.img];
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const id = window.setInterval(() => {
+      setActive((i) => (i + 1) % images.length);
+    }, 4000);
+    return () => window.clearInterval(id);
+  }, [images.length]);
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="relative bg-[#EDE0F7] dark:bg-[#16213e] rounded-3xl overflow-hidden aspect-square">
+        {images.map((src, i) => (
+          <img
+            key={src + i}
+            src={src}
+            alt={`${product.name} ${i + 1}`}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${
+              i === active ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        ))}
+        <div className="gift-overlay" aria-hidden="true">
+          <span>🎁</span>
+        </div>
+        {images.length > 1 && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                aria-label={`الصورة ${i + 1}`}
+                onClick={() => setActive(i)}
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  i === active
+                    ? "w-7 bg-[#534AB7] shadow"
+                    : "w-2.5 bg-white/80 hover:bg-white"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+      {images.length > 1 && (
+        <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+          {images.map((src, i) => (
+            <button
+              key={src + i}
+              type="button"
+              onClick={() => setActive(i)}
+              className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all duration-300 btn-anim ${
+                i === active
+                  ? "border-[#534AB7] shadow ring-2 ring-[#C8A8E9]/50"
+                  : "border-[#EDE0F7] dark:border-[#2a2f4a] opacity-70 hover:opacity-100"
+              }`}
+              aria-label={`عرض الصورة ${i + 1}`}
+            >
+              <img src={src} alt="" className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Product() {
   const params = useParams();
@@ -118,16 +187,8 @@ export default function Product() {
       </div>
 
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-        <div className="relative bg-[#EDE0F7] dark:bg-[#16213e] rounded-3xl overflow-hidden aspect-square">
-          <img
-            src={product.img}
-            alt={product.name}
-            className="w-full h-full object-cover product-reveal"
-          />
-          <div className="gift-overlay" aria-hidden="true">
-            <span>🎁</span>
-          </div>
-        </div>
+        <ProductGallery product={product} />
+
 
         <div className="flex flex-col fade-up delay-100">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-3">{product.name}</h1>
