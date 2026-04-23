@@ -28,6 +28,7 @@ export default function Checkout() {
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
   const [delivery, setDelivery] = useState<DeliveryKey>("city");
+  const [payment, setPayment] = useState<"cliq" | "cash">("cliq");
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
 
   if (items.length === 0) {
@@ -85,15 +86,23 @@ export default function Checkout() {
       `💵 المجموع الفرعي: ${fmt(subtotal)}`,
       `💰 المجموع الكلي: ${fmt(total)}`,
       "",
-      `💳 طريقة الدفع: كلك`,
-      `   • رقم الكلك: ${CLIQ.number}`,
-      `   • الاسم: ${CLIQ.name}`,
-      `   • البنك: ${CLIQ.bank}`,
     ];
+    if (payment === "cliq") {
+      lines.push(
+        `💳 الدفع: كلك`,
+        `   • رقم الكلك: ${CLIQ.number}`,
+        `   • الاسم: ${CLIQ.name}`,
+        `   • البنك: ${CLIQ.bank}`,
+      );
+    } else {
+      lines.push(`💵 الدفع: كاش عند الاستلام`);
+    }
     if (notes.trim()) {
       lines.push("", `💌 بطاقة التهنئة / ملاحظات: ${notes}`);
     }
-    lines.push("", "📸 سيتم إرسال صورة الحوالة للتأكيد.");
+    if (payment === "cliq") {
+      lines.push("", "📸 سيتم إرسال صورة الحوالة للتأكيد.");
+    }
 
     const text = encodeURIComponent(lines.join("\n"));
     const url = `https://wa.me/${WHATSAPP_PHONE}?text=${text}`;
@@ -109,6 +118,7 @@ export default function Checkout() {
           subtotal: fmt(subtotal),
           delivery: deliveryOption.label,
           deliveryCost: fmt(deliveryOption.cost),
+          payment: payment === "cliq" ? "كلك" : "كاش عند الاستلام",
           createdAt: now.toISOString(),
         }),
       );
@@ -195,38 +205,92 @@ export default function Checkout() {
             </div>
           </div>
 
-          {/* Cliq Payment */}
-          <div className="rounded-2xl border-2 border-[#C8A8E9] dark:border-[#534AB7] bg-gradient-to-bl from-[#EDE0F7] via-white to-[#EDE0F7] dark:from-[#16213e] dark:via-[#1a1a2e] dark:to-[#16213e] p-5 shadow-sm">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-2xl">💳</span>
-              <h3 className="font-extrabold text-[#534AB7] dark:text-[#C8A8E9] text-lg">
-                الدفع عبر كلك (Cliq)
-              </h3>
+          {/* Payment Method */}
+          <div>
+            <label className="block text-[#534AB7] dark:text-[#C8A8E9] font-bold mb-3">
+              💰 طريقة الدفع
+            </label>
+            <div className="grid sm:grid-cols-2 gap-3 mb-4">
+              {([
+                { key: "cliq" as const, icon: "💳", label: "كلك", desc: "تحويل بنكي إلكتروني" },
+                { key: "cash" as const, icon: "💵", label: "كاش عند الاستلام", desc: "ادفعي للمندوب عند التسليم" },
+              ]).map((opt) => {
+                const active = payment === opt.key;
+                return (
+                  <label
+                    key={opt.key}
+                    className={`cursor-pointer rounded-2xl border-2 p-4 btn-anim flex items-start gap-3 ${
+                      active
+                        ? "border-[#534AB7] bg-[#EDE0F7] dark:bg-[#2a2f4a] shadow-md"
+                        : "border-[#EDE0F7] dark:border-[#2a2f4a] bg-white dark:bg-[#16213e] hover:border-[#C8A8E9]"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="payment"
+                      value={opt.key}
+                      checked={active}
+                      onChange={() => setPayment(opt.key)}
+                      className="mt-1 accent-[#534AB7]"
+                    />
+                    <div className="flex-1">
+                      <div className="font-bold text-[#534AB7] dark:text-[#C8A8E9] flex items-center gap-2">
+                        <span className="text-xl">{opt.icon}</span>
+                        <span>{opt.label}</span>
+                      </div>
+                      <div className="text-xs text-[#A87FD1] mt-1">{opt.desc}</div>
+                    </div>
+                  </label>
+                );
+              })}
             </div>
-            <div className="space-y-2 bg-white/70 dark:bg-[#1a1a2e]/60 rounded-xl p-4 border border-[#C8A8E9]/40 dark:border-[#2a2f4a]">
-              <div className="flex justify-between gap-2 border-b border-[#EDE0F7] dark:border-[#2a2f4a] pb-2">
-                <span className="text-[#A87FD1] font-semibold text-sm">رقم الكلك</span>
-                <a
-                  href={`tel:${CLIQ.number}`}
-                  dir="ltr"
-                  className="font-bold text-[#534AB7] dark:text-[#C8A8E9] tracking-wider"
-                >
-                  {CLIQ.number}
-                </a>
+
+            {payment === "cliq" ? (
+              <div className="rounded-2xl border-2 border-[#C8A8E9] dark:border-[#534AB7] bg-gradient-to-bl from-[#EDE0F7] via-white to-[#EDE0F7] dark:from-[#16213e] dark:via-[#1a1a2e] dark:to-[#16213e] p-5 shadow-sm fade-up">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-2xl">💳</span>
+                  <h3 className="font-extrabold text-[#534AB7] dark:text-[#C8A8E9] text-lg">
+                    الدفع عبر كلك (Cliq)
+                  </h3>
+                </div>
+                <div className="space-y-2 bg-white/70 dark:bg-[#1a1a2e]/60 rounded-xl p-4 border border-[#C8A8E9]/40 dark:border-[#2a2f4a]">
+                  <div className="flex justify-between gap-2 border-b border-[#EDE0F7] dark:border-[#2a2f4a] pb-2">
+                    <span className="text-[#A87FD1] font-semibold text-sm">رقم الكلك</span>
+                    <a
+                      href={`tel:${CLIQ.number}`}
+                      dir="ltr"
+                      className="font-bold text-[#534AB7] dark:text-[#C8A8E9] tracking-wider"
+                    >
+                      {CLIQ.number}
+                    </a>
+                  </div>
+                  <div className="flex justify-between gap-2 border-b border-[#EDE0F7] dark:border-[#2a2f4a] pb-2">
+                    <span className="text-[#A87FD1] font-semibold text-sm">الاسم</span>
+                    <span className="font-bold text-[#534AB7] dark:text-[#C8A8E9]">{CLIQ.name}</span>
+                  </div>
+                  <div className="flex justify-between gap-2">
+                    <span className="text-[#A87FD1] font-semibold text-sm">البنك</span>
+                    <span className="font-bold text-[#534AB7] dark:text-[#C8A8E9]">{CLIQ.bank}</span>
+                  </div>
+                </div>
+                <p className="mt-3 text-sm text-[#534AB7] dark:text-[#C8A8E9] bg-[#C8A8E9]/30 dark:bg-[#2a2f4a] rounded-xl p-3 flex items-start gap-2">
+                  <span className="text-lg">📸</span>
+                  <span>أرسل صورة الحوالة على واتساب بعد الدفع.</span>
+                </p>
               </div>
-              <div className="flex justify-between gap-2 border-b border-[#EDE0F7] dark:border-[#2a2f4a] pb-2">
-                <span className="text-[#A87FD1] font-semibold text-sm">الاسم</span>
-                <span className="font-bold text-[#534AB7] dark:text-[#C8A8E9]">{CLIQ.name}</span>
+            ) : (
+              <div className="rounded-2xl border-2 border-[#C8A8E9] dark:border-[#534AB7] bg-gradient-to-bl from-[#EDE0F7] via-white to-[#EDE0F7] dark:from-[#16213e] dark:via-[#1a1a2e] dark:to-[#16213e] p-5 shadow-sm fade-up flex items-start gap-3">
+                <span className="text-3xl">💵</span>
+                <div>
+                  <h3 className="font-extrabold text-[#534AB7] dark:text-[#C8A8E9] text-lg mb-1">
+                    كاش عند الاستلام
+                  </h3>
+                  <p className="text-sm text-[#534AB7] dark:text-[#C8A8E9]">
+                    سيتم تحصيل المبلغ عند التوصيل.
+                  </p>
+                </div>
               </div>
-              <div className="flex justify-between gap-2">
-                <span className="text-[#A87FD1] font-semibold text-sm">البنك</span>
-                <span className="font-bold text-[#534AB7] dark:text-[#C8A8E9]">{CLIQ.bank}</span>
-              </div>
-            </div>
-            <p className="mt-3 text-sm text-[#534AB7] dark:text-[#C8A8E9] bg-[#C8A8E9]/30 dark:bg-[#2a2f4a] rounded-xl p-3 flex items-start gap-2">
-              <span className="text-lg">📸</span>
-              <span>بعد الدفع أرسل صورة الحوالة على واتساب لتأكيد الطلب.</span>
-            </p>
+            )}
           </div>
 
           <div>
