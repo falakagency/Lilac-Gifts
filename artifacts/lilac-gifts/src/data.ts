@@ -2,6 +2,9 @@ import amnAamGraduationImg from "@assets/WhatsApp_Image_2026-04-23_at_8.13.32_PM
 import uniGrad1 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.28_PM_(2)_1776965067951.jpeg";
 import uniGrad2 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.28_PM_(3)_1776965067952.jpeg";
 import uniGrad3 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.28_PM_1776965067954.jpeg";
+import dallah1 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.22_PM_(1)_1776965118077.jpeg";
+import dallah2 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.22_PM_1776965118078.jpeg";
+import dallah3 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.24_PM_1776965118079.jpeg";
 
 export type Product = {
   id: number;
@@ -61,7 +64,7 @@ export const categories: Category[] = [
     name: "دلات وفناجين",
     icon: "☕",
     products: [
-      { id: 501, name: "دلة بطباعة مخصصة", price: "30 د.أ", desc: "اطبع اسمك أو صورتك", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=دلة", bestseller: true, rating: 4.9, reviews: 56 },
+      { id: 501, name: "دلة بطباعة مخصصة", price: "30 د.أ", desc: "دلة قهوة فاخرة مع طباعة الاسم أو عبارة مخصصة، تأتي مع فناجين مطابقة", img: dallah1, gallery: [dallah1, dallah2, dallah3], bestseller: true, rating: 4.9, reviews: 56 },
     ],
   },
 ];
