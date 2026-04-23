@@ -5,6 +5,9 @@ import uniGrad3 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.28_PM_1776965067
 import dallah1 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.22_PM_(1)_1776965118077.jpeg";
 import dallah2 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.22_PM_1776965118078.jpeg";
 import dallah3 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.24_PM_1776965118079.jpeg";
+import mom1 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.25_PM_1776965217832.jpeg";
+import mom2 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.25_PM_(1)_1776965217833.jpeg";
+import mom3 from "@assets/WhatsApp_Image_2026-04-23_at_8.23.25_PM_(2)_1776965217835.jpeg";
 
 export type Product = {
   id: number;
@@ -48,7 +51,7 @@ export const categories: Category[] = [
     name: "يوم الأم",
     icon: "🌸",
     products: [
-      { id: 301, name: "طقم يوم الأم الكلاسيكي", price: "18 د.أ", desc: "أجمل هدية لأحن الأمهات", img: "https://placehold.co/300x300/EDE0F7/534AB7?text=الأم", bestseller: true, rating: 5.0, reviews: 89 },
+      { id: 301, name: "طقم يوم الأم الكلاسيكي", price: "18 د.أ", desc: "أجمل هدية لأحن الأمهات، يحتوي على لوحة مرآة مخصصة باسم الأم وعبارة محفورة، مع شمعة وفنجان قهوة مخصص", img: mom1, gallery: [mom1, mom2, mom3], bestseller: true, rating: 5.0, reviews: 89 },
     ],
   },
   {
