@@ -10,6 +10,7 @@ import {
 import ProductCard from "../components/ProductCard";
 import BudgetFilter from "../components/BudgetFilter";
 import CountdownCard from "../components/CountdownCard";
+import Petals from "../components/Petals";
 
 const HERO_TEXT = "هدايا مخصصة لكل مناسبة";
 const TYPE_SPEED = 80;
@@ -48,8 +49,9 @@ export default function Home() {
 
   return (
     <div>
+      <Petals />
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-bl from-[#EDE0F7] via-white to-[#EDE0F7] dark:from-[#16213e] dark:via-[#1a1a2e] dark:to-[#16213e]">
+      <section className="relative overflow-hidden hero-morph dark:bg-gradient-to-bl dark:from-[#16213e] dark:via-[#1a1a2e] dark:to-[#16213e]">
         <div className="max-w-6xl mx-auto px-4 py-16 sm:py-24 text-center">
           <div className="inline-block text-5xl mb-4 fade-up">🎁🌸</div>
           <h1 className="text-4xl sm:text-6xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-4 leading-tight min-h-[1.2em]">

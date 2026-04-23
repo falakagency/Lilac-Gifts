@@ -111,8 +111,15 @@ export default function Product() {
       </div>
 
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-        <div className="bg-[#EDE0F7] dark:bg-[#16213e] rounded-3xl overflow-hidden aspect-square fade-up">
-          <img src={product.img} alt={product.name} className="w-full h-full object-cover" />
+        <div className="relative bg-[#EDE0F7] dark:bg-[#16213e] rounded-3xl overflow-hidden aspect-square">
+          <img
+            src={product.img}
+            alt={product.name}
+            className="w-full h-full object-cover product-reveal"
+          />
+          <div className="gift-overlay" aria-hidden="true">
+            <span>🎁</span>
+          </div>
         </div>
 
         <div className="flex flex-col fade-up delay-100">
