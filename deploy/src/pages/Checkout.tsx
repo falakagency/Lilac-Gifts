@@ -1,0 +1,373 @@
+import { Link, useLocation } from "wouter";
+import { useState } from "react";
+import { useCart } from "../cart";
+import { FORMSPREE_ENDPOINT } from "../data";
+
+type DeliveryKey = "city" | "village";
+
+const DELIVERY_OPTIONS: Array<{
+  key: DeliveryKey;
+  label: string;
+  cost: number;
+  desc: string;
+}> = [
+  { key: "city", label: "داخل المدن الرئيسية", cost: 3, desc: "عمّان، الزرقاء، إربد، السلط، مادبا" },
+  { key: "village", label: "داخل القرى البعيدة", cost: 4, desc: "باقي المناطق والقرى" },
+];
+
+const CLIQ = {
+  number: "0781169255",
+  name: "دينا زهير الابطح",
+  bank: "العربي الإسلامي",
+};
+
+export default function Checkout() {
+  const { items, totalPriceNumber, clear } = useCart();
+  const [, navigate] = useLocation();
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [notes, setNotes] = useState("");
+  const [delivery, setDelivery] = useState<DeliveryKey>("city");
+  const [payment, setPayment] = useState<"cliq" | "cash">("cliq");
+  const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
+
+  if (items.length === 0) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-20 text-center">
+        <div className="text-7xl mb-4">🛍️</div>
+        <h2 className="text-2xl font-bold text-[#534AB7] dark:text-[#C8A8E9] mb-2">لا توجد منتجات لإتمام الطلب</h2>
+        <p className="text-[#A87FD1] mb-6">أضيفي منتجات لسلتك أولاً</p>
+        <Link href="/" className="inline-block bg-[#534AB7] text-white px-8 py-3 rounded-full font-bold hover:bg-[#A87FD1] btn-anim">
+          تصفحي المنتجات
+        </Link>
+      </div>
+    );
+  }
+
+  const deliveryOption = DELIVERY_OPTIONS.find((d) => d.key === delivery)!;
+  const subtotal = totalPriceNumber;
+  const total = subtotal + deliveryOption.cost;
+  const fmt = (n: number) => `${n.toFixed(2)} د.أ`;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const errs: { name?: string; phone?: string } = {};
+    if (!name.trim()) errs.name = "يرجى إدخال الاسم";
+    if (!phone.trim()) errs.phone = "يرجى إدخال رقم الهاتف";
+    setErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+
+    const orderNumber = `#LG-${Math.floor(1000 + Math.random() * 9000)}`;
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("ar-JO", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const timeStr = now.toLocaleTimeString("ar-JO", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    const lines = [
+      "🎁 طلب جديد - Lilac Gifts",
+      `📅 ${dateStr} - ${timeStr}`,
+      `👤 ${name}`,
+      `📱 ${phone}`,
+      "",
+      "🛒 المنتجات:",
+      ...items.map(({ product, qty }) => `• ${product.name} × ${qty}`),
+      "",
+      `🚚 ${deliveryOption.label}`,
+      `💳 ${payment === "cliq" ? "كلك" : "كاش عند الاستلام"}`,
+      `💰 المجموع الكلي: ${fmt(total)}`,
+      "",
+      "🌐 Lilac Gifts",
+    ];
+
+    const productsText = items
+      .map(({ product, qty }) => `${product.name} × ${qty} (${product.price})`)
+      .join(" | ");
+    const paymentLabel = payment === "cliq" ? "كلك" : "كاش عند الاستلام";
+
+    if (!FORMSPREE_ENDPOINT || FORMSPREE_ENDPOINT.endsWith("xxxxxxx")) {
+      console.warn(
+        "[Formspree] Skipped: endpoint is not configured. Edit FORMSPREE_ENDPOINT in src/data.ts with your real form ID (e.g. https://formspree.io/f/abcd1234).",
+      );
+    } else {
+      const payload = {
+        _subject: `طلب جديد ${orderNumber} - Lilac Gifts`,
+        orderNumber,
+        customerName: name,
+        customerPhone: phone,
+        products: productsText,
+        total: fmt(total),
+        delivery: deliveryOption.label,
+        payment: paymentLabel,
+        dateTime: `${dateStr} - ${timeStr}`,
+        message: lines.join("\n"),
+      };
+      console.log("[Formspree] Sending order to", FORMSPREE_ENDPOINT, payload);
+      fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      })
+        .then(async (res) => {
+          const body = await res.text();
+          if (res.ok) {
+            console.log("[Formspree] ✅ Order sent successfully", res.status, body);
+          } else {
+            console.error("[Formspree] ❌ Request failed", res.status, body);
+          }
+        })
+        .catch((err) => {
+          console.error("[Formspree] ❌ Network error:", err);
+        });
+    }
+
+    try {
+      sessionStorage.setItem(
+        "lilac-last-order",
+        JSON.stringify({
+          number: orderNumber,
+          name,
+          phone,
+          total: fmt(total),
+          subtotal: fmt(subtotal),
+          delivery: deliveryOption.label,
+          deliveryCost: fmt(deliveryOption.cost),
+          payment: payment === "cliq" ? "كلك" : "كاش عند الاستلام",
+          createdAt: now.toISOString(),
+        }),
+      );
+    } catch {
+      // ignore
+    }
+
+    clear();
+    navigate("/confirmation");
+  };
+
+  const inputBase =
+    "w-full bg-white dark:bg-[#1a1a2e] text-[#2A1F3D] dark:text-[#eee] border-2 rounded-2xl px-4 py-3 text-lg outline-none focus:border-[#534AB7] dark:focus:border-[#C8A8E9] transition";
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-10">
+      <h1 className="text-3xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-8">إتمام الطلب</h1>
+
+      <div className="grid md:grid-cols-5 gap-8">
+        <form onSubmit={handleSubmit} className="md:col-span-3 space-y-5">
+          <div>
+            <label className="block text-[#534AB7] dark:text-[#C8A8E9] font-bold mb-2">الاسم الكامل</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="مثال: سارة أحمد"
+              className={`${inputBase} ${errors.name ? "border-red-400" : "border-[#EDE0F7] dark:border-[#2a2f4a]"}`}
+            />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+          </div>
+
+          <div>
+            <label className="block text-[#534AB7] dark:text-[#C8A8E9] font-bold mb-2">رقم الهاتف</label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="07XXXXXXXX"
+              dir="ltr"
+              className={`${inputBase} text-right ${errors.phone ? "border-red-400" : "border-[#EDE0F7] dark:border-[#2a2f4a]"}`}
+            />
+            {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+          </div>
+
+          {/* Delivery Options */}
+          <div>
+            <label className="block text-[#534AB7] dark:text-[#C8A8E9] font-bold mb-3">
+              🚚 اختاري طريقة التوصيل
+            </label>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {DELIVERY_OPTIONS.map((opt) => {
+                const active = delivery === opt.key;
+                return (
+                  <label
+                    key={opt.key}
+                    className={`cursor-pointer rounded-2xl border-2 p-4 btn-anim flex items-start gap-3 ${
+                      active
+                        ? "border-[#534AB7] bg-[#EDE0F7] dark:bg-[#2a2f4a] shadow-md"
+                        : "border-[#EDE0F7] dark:border-[#2a2f4a] bg-white dark:bg-[#16213e] hover:border-[#C8A8E9]"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="delivery"
+                      value={opt.key}
+                      checked={active}
+                      onChange={() => setDelivery(opt.key)}
+                      className="mt-1 accent-[#534AB7]"
+                    />
+                    <div className="flex-1">
+                      <div className="font-bold text-[#534AB7] dark:text-[#C8A8E9] flex justify-between gap-2">
+                        <span>{opt.label}</span>
+                        <span className="text-sm bg-[#534AB7] text-white px-2 py-0.5 rounded-full whitespace-nowrap">
+                          {opt.cost} د.أ
+                        </span>
+                      </div>
+                      <div className="text-xs text-[#A87FD1] mt-1">{opt.desc}</div>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Payment Method */}
+          <div>
+            <label className="block text-[#534AB7] dark:text-[#C8A8E9] font-bold mb-3">
+              💰 طريقة الدفع
+            </label>
+            <div className="grid sm:grid-cols-2 gap-3 mb-4">
+              {([
+                { key: "cliq" as const, icon: "💳", label: "كلك", desc: "تحويل بنكي إلكتروني" },
+                { key: "cash" as const, icon: "💵", label: "كاش عند الاستلام", desc: "ادفعي للمندوب عند التسليم" },
+              ]).map((opt) => {
+                const active = payment === opt.key;
+                return (
+                  <label
+                    key={opt.key}
+                    className={`cursor-pointer rounded-2xl border-2 p-4 btn-anim flex items-start gap-3 ${
+                      active
+                        ? "border-[#534AB7] bg-[#EDE0F7] dark:bg-[#2a2f4a] shadow-md"
+                        : "border-[#EDE0F7] dark:border-[#2a2f4a] bg-white dark:bg-[#16213e] hover:border-[#C8A8E9]"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="payment"
+                      value={opt.key}
+                      checked={active}
+                      onChange={() => setPayment(opt.key)}
+                      className="mt-1 accent-[#534AB7]"
+                    />
+                    <div className="flex-1">
+                      <div className="font-bold text-[#534AB7] dark:text-[#C8A8E9] flex items-center gap-2">
+                        <span className="text-xl">{opt.icon}</span>
+                        <span>{opt.label}</span>
+                      </div>
+                      <div className="text-xs text-[#A87FD1] mt-1">{opt.desc}</div>
+                    </div>
+                  </label>
+                );
+              })}
+            </div>
+
+            {payment === "cliq" ? (
+              <div className="rounded-2xl border-2 border-[#C8A8E9] dark:border-[#534AB7] bg-gradient-to-bl from-[#EDE0F7] via-white to-[#EDE0F7] dark:from-[#16213e] dark:via-[#1a1a2e] dark:to-[#16213e] p-5 shadow-sm fade-up">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-2xl">💳</span>
+                  <h3 className="font-extrabold text-[#534AB7] dark:text-[#C8A8E9] text-lg">
+                    الدفع عبر كلك (Cliq)
+                  </h3>
+                </div>
+                <div className="space-y-2 bg-white/70 dark:bg-[#1a1a2e]/60 rounded-xl p-4 border border-[#C8A8E9]/40 dark:border-[#2a2f4a]">
+                  <div className="flex justify-between gap-2 border-b border-[#EDE0F7] dark:border-[#2a2f4a] pb-2">
+                    <span className="text-[#A87FD1] font-semibold text-sm">رقم الكلك</span>
+                    <a
+                      href={`tel:${CLIQ.number}`}
+                      dir="ltr"
+                      className="font-bold text-[#534AB7] dark:text-[#C8A8E9] tracking-wider"
+                    >
+                      {CLIQ.number}
+                    </a>
+                  </div>
+                  <div className="flex justify-between gap-2 border-b border-[#EDE0F7] dark:border-[#2a2f4a] pb-2">
+                    <span className="text-[#A87FD1] font-semibold text-sm">الاسم</span>
+                    <span className="font-bold text-[#534AB7] dark:text-[#C8A8E9]">{CLIQ.name}</span>
+                  </div>
+                  <div className="flex justify-between gap-2">
+                    <span className="text-[#A87FD1] font-semibold text-sm">البنك</span>
+                    <span className="font-bold text-[#534AB7] dark:text-[#C8A8E9]">{CLIQ.bank}</span>
+                  </div>
+                </div>
+                <p className="mt-3 text-sm text-[#534AB7] dark:text-[#C8A8E9] bg-[#C8A8E9]/30 dark:bg-[#2a2f4a] rounded-xl p-3 flex items-start gap-2">
+                  <span className="text-lg">📸</span>
+                  <span>أرسل صورة الحوالة على واتساب بعد الدفع.</span>
+                </p>
+              </div>
+            ) : (
+              <div className="rounded-2xl border-2 border-[#C8A8E9] dark:border-[#534AB7] bg-gradient-to-bl from-[#EDE0F7] via-white to-[#EDE0F7] dark:from-[#16213e] dark:via-[#1a1a2e] dark:to-[#16213e] p-5 shadow-sm fade-up flex items-start gap-3">
+                <span className="text-3xl">💵</span>
+                <div>
+                  <h3 className="font-extrabold text-[#534AB7] dark:text-[#C8A8E9] text-lg mb-1">
+                    كاش عند الاستلام
+                  </h3>
+                  <p className="text-sm text-[#534AB7] dark:text-[#C8A8E9]">
+                    سيتم تحصيل المبلغ عند التوصيل.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-[#534AB7] dark:text-[#C8A8E9] font-bold mb-2">ملاحظات (اختياري)</label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="عنوان التوصيل، تفاصيل التخصيص (اسم/صورة)، موعد التسليم..."
+              rows={4}
+              className={`${inputBase} border-[#EDE0F7] dark:border-[#2a2f4a] resize-none`}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#1da851] btn-anim shadow-lg flex items-center justify-center gap-2"
+          >
+            <span>تأكيد الطلب عبر واتساب</span>
+            <span>💬</span>
+          </button>
+
+          <p className="text-center text-sm text-[#A87FD1]">
+            سيتم تحويلك لتطبيق واتساب لتأكيد طلبك مع فريقنا
+          </p>
+        </form>
+
+        <aside className="md:col-span-2">
+          <div className="bg-[#EDE0F7] dark:bg-[#16213e] dark:border dark:border-[#2a2f4a] rounded-2xl p-5 sticky top-24">
+            <h3 className="font-extrabold text-[#534AB7] dark:text-[#C8A8E9] text-lg mb-4">ملخص الطلب</h3>
+            <div className="space-y-3 mb-4">
+              {items.map(({ product, qty }) => (
+                <div key={product.id} className="flex justify-between text-sm">
+                  <span className="text-[#2A1F3D] dark:text-[#eee]">
+                    {product.name} <span className="text-[#A87FD1]">× {qty}</span>
+                  </span>
+                  <span className="text-[#534AB7] dark:text-[#C8A8E9] font-bold whitespace-nowrap">{product.price}</span>
+                </div>
+              ))}
+            </div>
+            <div className="border-t border-[#C8A8E9]/40 dark:border-[#2a2f4a] pt-3 space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-[#A87FD1]">المجموع الفرعي</span>
+                <span className="font-bold text-[#534AB7] dark:text-[#C8A8E9]">{fmt(subtotal)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[#A87FD1]">🚚 التوصيل ({deliveryOption.label})</span>
+                <span className="font-bold text-[#534AB7] dark:text-[#C8A8E9]">{fmt(deliveryOption.cost)}</span>
+              </div>
+              <div className="flex justify-between items-center pt-2 border-t border-[#C8A8E9]/40 dark:border-[#2a2f4a]">
+                <span className="text-[#534AB7] dark:text-[#C8A8E9] font-semibold">المجموع الكلي</span>
+                <span className="text-xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9]">{fmt(total)}</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+}

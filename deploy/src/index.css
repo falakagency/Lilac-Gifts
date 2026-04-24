@@ -1,0 +1,333 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-lilac: #C8A8E9;
+  --color-lilac-light: #EDE0F7;
+  --color-lilac-dark: #A87FD1;
+  --color-lilac-deep: #534AB7;
+  --font-sans: 'Cairo', system-ui, sans-serif;
+}
+
+html, body {
+  font-family: 'Cairo', system-ui, sans-serif;
+  direction: rtl;
+  background: #FFFFFF;
+  color: #2A1F3D;
+}
+
+html.dark, html.dark body {
+  background: #1a1a2e;
+  color: #eeeeee;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Smooth dark/light transitions globally */
+body, header, footer, main, section, aside, div, button, a, input, textarea, span, h1, h2, h3, h4, p {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===================== Keyframes ===================== */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  15% { transform: translateX(-4px) rotate(-8deg); }
+  30% { transform: translateX(4px) rotate(8deg); }
+  45% { transform: translateX(-3px) rotate(-6deg); }
+  60% { transform: translateX(3px) rotate(6deg); }
+  75% { transform: translateX(-2px) rotate(-3deg); }
+  90% { transform: translateX(2px) rotate(3deg); }
+}
+
+@keyframes bounceIcon {
+  0%, 100% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-8px) scale(1.15); }
+  60% { transform: translateY(2px) scale(0.95); }
+}
+
+@keyframes pulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(200, 168, 233, 0.55); }
+  70% { box-shadow: 0 0 0 14px rgba(200, 168, 233, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(200, 168, 233, 0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes pulseSoft {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+/* ===================== Utility classes ===================== */
+
+.fade-in { animation: fadeIn 0.6s ease-out both; }
+.fade-up { animation: fadeUp 0.6s ease-out both; }
+.slide-in-right { animation: slideInRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.slide-in-left { animation: slideInLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.float-slow { animation: float 3.5s ease-in-out infinite; }
+.pulse-soft { animation: pulseSoft 1.5s ease-in-out infinite; }
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+
+.cart-shake { animation: shake 0.6s ease-in-out; }
+.icon-bounce { animation: bounceIcon 0.55s ease-out; }
+.pulse-ring { animation: pulseRing 1.6s ease-out infinite; }
+
+/* Standard interactive transitions */
+.btn-anim {
+  transition: transform 0.25s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.btn-anim:hover { transform: scale(1.05); }
+.btn-anim:active { transform: scale(0.97); }
+
+.card-anim {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+}
+.card-anim:hover {
+  transform: scale(1.03) translateY(-2px);
+  box-shadow: 0 18px 40px -12px rgba(83, 74, 183, 0.28);
+}
+
+.lift-anim {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+.lift-anim:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px -12px rgba(168, 127, 209, 0.4);
+}
+
+.img-zoom {
+  transition: transform 0.5s ease;
+}
+.card-anim:hover .img-zoom,
+.group:hover .img-zoom {
+  transform: scale(1.08);
+}
+
+.icon-anim {
+  transition: transform 0.4s ease;
+  display: inline-block;
+}
+.lift-anim:hover .icon-anim {
+  animation: bounceIcon 0.6s ease-out;
+}
+
+@layer base {
+  body {
+    animation: fadeIn 0.4s ease-out both;
+  }
+}
+
+/* ===================== Typewriter cursor ===================== */
+
+@keyframes blinkCursor {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.95em;
+  margin-inline-start: 8px;
+  margin-inline-end: 2px;
+  vertical-align: -0.12em;
+  background: currentColor;
+  border-radius: 2px;
+  animation: blinkCursor 0.6s steps(1) infinite;
+  transition: opacity 0.3s ease;
+}
+
+.typewriter-cursor--hidden {
+  opacity: 0;
+  animation: none;
+}
+
+/* ===================== Bestseller ribbon ===================== */
+
+@keyframes ribbonShimmer {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  60%, 100% { transform: translateX(250%) skewX(-20deg); }
+}
+
+.bestseller-ribbon {
+  position: absolute;
+  top: 22px;
+  left: -55px;
+  width: 200px;
+  transform: rotate(-45deg);
+  background: linear-gradient(135deg, #534AB7 0%, #6e63d6 50%, #534AB7 100%);
+  color: #fff;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  z-index: 10;
+  box-shadow: 0 6px 14px -4px rgba(83, 74, 183, 0.55);
+  overflow: hidden;
+  white-space: nowrap;
+  direction: rtl;
+}
+
+.bestseller-ribbon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 35%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0) 65%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: ribbonShimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.bestseller-ribbon__text {
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* ===================== Floating petals ===================== */
+
+@keyframes petalFall {
+  0% { transform: translate3d(0, -10vh, 0); }
+  100% { transform: translate3d(var(--petal-drift, 0), 110vh, 0); }
+}
+
+@keyframes petalSway {
+  0%, 100% { transform: translateX(-12px) rotate(-15deg); }
+  50% { transform: translateX(12px) rotate(15deg); }
+}
+
+.petals-layer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+.petal-fall {
+  position: absolute;
+  top: 0;
+  display: inline-block;
+  will-change: transform;
+  animation-name: petalFall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.petal-sway {
+  display: inline-block;
+  will-change: transform;
+  animation-name: petalSway;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  filter: drop-shadow(0 1px 2px rgba(168, 127, 209, 0.3));
+}
+
+/* ===================== Hero morphing background ===================== */
+
+@keyframes heroMorph {
+  0% {
+    background: linear-gradient(135deg, #ffffff 0%, #ffffff 50%, #ffffff 100%);
+  }
+  33% {
+    background: linear-gradient(135deg, #EDE0F7 0%, #ffffff 50%, #EDE0F7 100%);
+  }
+  66% {
+    background: linear-gradient(135deg, #f3e8ff 0%, #EDE0F7 50%, #f3e8ff 100%);
+  }
+  100% {
+    background: linear-gradient(135deg, #ffffff 0%, #ffffff 50%, #ffffff 100%);
+  }
+}
+
+.hero-morph {
+  animation: heroMorph 6s ease-in-out infinite;
+}
+
+/* ===================== Gift unwrap on product image ===================== */
+
+@keyframes giftUnwrap {
+  0% { opacity: 1; transform: scale(1) rotate(0deg); }
+  40% { opacity: 1; transform: scale(1.1) rotate(-6deg); }
+  100% { opacity: 0; transform: scale(1.6) rotate(8deg); }
+}
+
+@keyframes productReveal {
+  0% { opacity: 0; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.gift-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #C8A8E9 0%, #534AB7 100%);
+  z-index: 5;
+  font-size: clamp(80px, 18vw, 160px);
+  animation: giftUnwrap 0.7s ease-in 0.5s forwards;
+  box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+}
+
+.gift-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, transparent 47%, rgba(255, 255, 255, 0.6) 50%, transparent 53%),
+    linear-gradient(to bottom, transparent 47%, rgba(255, 255, 255, 0.6) 50%, transparent 53%);
+  pointer-events: none;
+}
+
+.product-reveal {
+  animation: productReveal 1.2s ease-out both;
+}
