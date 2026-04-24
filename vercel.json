@@ -1,7 +1,5 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd artifacts/lilac-gifts && npx vite build",
-  "outputDirectory": "artifacts/lilac-gifts/dist/public",
-  "installCommand": "pnpm install --filter ./artifacts/lilac-gifts...",
+  "buildCommand": "pnpm --filter @workspace/lilac-gifts run build",
+  "outputDirectory": "artifacts/lilac-gifts/dist",
   "framework": null
 }
