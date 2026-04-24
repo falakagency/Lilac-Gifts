@@ -30,7 +30,7 @@ function App() {
   return (
     <ThemeProvider>
       <CartProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+        <WouterRouter>
           <Layout>
             <Routes />
           </Layout>
