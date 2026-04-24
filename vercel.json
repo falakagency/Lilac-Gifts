@@ -1,5 +1,18 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
-  "buildCommand": "cd artifacts/lilac-gifts && npm run build",
-  "outputDirectory": "artifacts/lilac-gifts/dist"
+  "version": 2,
+  "builds": [
+    {
+      "src": "artifacts/lilac-gifts/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
 }
