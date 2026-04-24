@@ -6,3 +6,9 @@ id = "FJHKxHs78FQ732dIEzfAd"
 uri = "file://vercel.json"
 type = "unspecified"
 title = "vercel.json"
+
+[[outputs]]
+id = "iLwGg98Ia7Ybv0vZ0RFlO"
+uri = "file://lilac-gifts-website.tar.gz"
+type = "unspecified"
+title = "ملفات الموقع جاهزة للنشر على Netlify"
