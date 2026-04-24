@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm --filter @workspace/lilac-gifts run build",
-  "outputDirectory": "artifacts/lilac-gifts/dist",
-  "framework": null
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "buildCommand": "cd artifacts/lilac-gifts && npm run build",
+  "outputDirectory": "artifacts/lilac-gifts/dist"
 }
