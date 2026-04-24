@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "FJHKxHs78FQ732dIEzfAd"
+uri = "file://vercel.json"
+type = "unspecified"
+title = "vercel.json"
