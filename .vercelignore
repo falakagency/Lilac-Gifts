@@ -1,0 +1,6 @@
+artifacts/api-server
+.local
+.agents
+.cache
+.config
+node_modules
