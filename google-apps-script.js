@@ -15,6 +15,7 @@
  * 10. انسخي الـ Web app URL وأرسليه لي لربطه بالموقع
  */
 
+const SHEET_ID = '1lai1FM_uowx0Sp5E2jTFRD5ZBPa-Vb2Gkbwq5nw9AAk';
 const SHEET_NAME = 'Orders';
 
 function doPost(e) {
@@ -47,12 +48,12 @@ function doPost(e) {
 
 function doGet() {
   return ContentService
-    .createTextOutput(JSON.stringify({ status: 'Lilac Gifts webhook is live' }))
+    .createTextOutput(JSON.stringify({ status: 'Lilac Gifts webhook is live', sheet: SHEET_ID }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
 function getOrCreateSheet() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.openById(SHEET_ID);
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
