@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { useCart } from "../cart";
-import { WHATSAPP_PHONE, GOOGLE_SHEETS_WEBHOOK_URL } from "../data";
+import { GOOGLE_SHEETS_WEBHOOK_URL } from "../data";
 
 type DeliveryKey = "city" | "village";
 
@@ -30,6 +30,7 @@ export default function Checkout() {
   const [delivery, setDelivery] = useState<DeliveryKey>("city");
   const [payment, setPayment] = useState<"cliq" | "cash">("cliq");
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
+  const [submitting, setSubmitting] = useState(false);
 
   if (items.length === 0) {
     return (
@@ -51,11 +52,14 @@ export default function Checkout() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     const errs: { name?: string; phone?: string } = {};
     if (!name.trim()) errs.name = "يرجى إدخال الاسم";
     if (!phone.trim()) errs.phone = "يرجى إدخال رقم الهاتف";
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
+
+    setSubmitting(true);
 
     const orderNumber = `#LG-${Math.floor(1000 + Math.random() * 9000)}`;
     const now = new Date();
@@ -68,24 +72,6 @@ export default function Checkout() {
       hour: "2-digit",
       minute: "2-digit",
     });
-
-    const lines = [
-      "🎁 طلب جديد - Lilac Gifts",
-      `🔖 رقم الطلب: ${orderNumber}`,
-      `📅 ${dateStr} - ${timeStr}`,
-      `👤 الاسم: ${name}`,
-      `📱 الهاتف: ${phone}`,
-      "",
-      "🛒 المنتجات:",
-      ...items.map(({ product, qty }) => `• ${product.name} × ${qty} (${product.price})`),
-      "",
-      `🚚 التوصيل: ${deliveryOption.label} (${fmt(deliveryOption.cost)})`,
-      `💳 الدفع: ${payment === "cliq" ? "كلك" : "كاش عند الاستلام"}`,
-      `💰 المجموع الكلي: ${fmt(total)}`,
-      ...(notes.trim() ? ["", `📝 ملاحظات: ${notes.trim()}`] : []),
-      "",
-      "🌐 Lilac Gifts",
-    ];
 
     if (GOOGLE_SHEETS_WEBHOOK_URL) {
       const productsText = items
@@ -112,9 +98,6 @@ export default function Checkout() {
       });
     }
 
-    const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(lines.join("\n"))}`;
-    window.open(whatsappUrl, "_blank");
-
     try {
       sessionStorage.setItem(
         "lilac-last-order",
@@ -127,6 +110,12 @@ export default function Checkout() {
           delivery: deliveryOption.label,
           deliveryCost: fmt(deliveryOption.cost),
           payment: payment === "cliq" ? "كلك" : "كاش عند الاستلام",
+          notes: notes.trim(),
+          items: items.map(({ product, qty }) => ({
+            name: product.name,
+            price: product.price,
+            qty,
+          })),
           createdAt: now.toISOString(),
         }),
       );
@@ -313,15 +302,12 @@ export default function Checkout() {
 
           <button
             type="submit"
-            className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#1da851] btn-anim shadow-lg flex items-center justify-center gap-2"
+            disabled={submitting}
+            className="w-full bg-[#534AB7] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#A87FD1] btn-anim shadow-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <span>تأكيد الطلب عبر واتساب</span>
-            <span>💬</span>
+            <span>{submitting ? "جارٍ الإرسال..." : "إتمام الطلب"}</span>
+            {!submitting && <span>✓</span>}
           </button>
-
-          <p className="text-center text-sm text-[#A87FD1]">
-            سيتم تحويلك لتطبيق واتساب لتأكيد طلبك مع فريقنا
-          </p>
         </form>
 
         <aside className="md:col-span-2">

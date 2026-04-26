@@ -91,7 +91,7 @@ export default function Confirmation() {
       <div className="bg-white dark:bg-[#16213e] rounded-3xl border-2 border-[#EDE0F7] dark:border-[#2a2f4a] p-8 sm:p-10 text-center shadow-sm fade-up">
         <div className="text-7xl mb-4 float-slow">🎉</div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-3">
-          ✅ تم استلام طلبك بنجاح
+          تم استلام طلبكِ بنجاح! 🎉
         </h1>
         <p className="text-[#A87FD1] mb-2">شكراً لاختياركِ Lilac Gifts 🌸</p>
         <p className="text-[#534AB7] dark:text-[#C8A8E9] mb-8">
@@ -148,14 +148,14 @@ export default function Confirmation() {
             rel="noopener noreferrer"
             className="flex-1 bg-[#25D366] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#1da851] btn-anim shadow flex items-center justify-center gap-2"
           >
-            <span>متابعة الطلب عبر واتساب</span>
+            <span>تابع طلبكِ على واتساب</span>
             <span>💬</span>
           </a>
           <Link
             href="/"
             className="flex-1 text-center bg-white dark:bg-[#16213e] border-2 border-[#C8A8E9] dark:border-[#2a2f4a] text-[#534AB7] dark:text-[#C8A8E9] py-4 rounded-2xl font-bold text-lg hover:bg-[#EDE0F7] dark:hover:bg-[#2a2f4a] btn-anim"
           >
-            العودة للرئيسية
+            العودة للمتجر
           </Link>
         </div>
 
