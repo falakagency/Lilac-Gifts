@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { useCart } from "../cart";
-import { WHATSAPP_PHONE } from "../data";
+import { WHATSAPP_PHONE, GOOGLE_SHEETS_WEBHOOK_URL } from "../data";
 
 type DeliveryKey = "city" | "village";
 
@@ -86,6 +86,31 @@ export default function Checkout() {
       "",
       "🌐 Lilac Gifts",
     ];
+
+    if (GOOGLE_SHEETS_WEBHOOK_URL) {
+      const productsText = items
+        .map(({ product, qty }) => `${product.name} × ${qty} (${product.price})`)
+        .join(" | ");
+      const sheetPayload = {
+        orderNumber,
+        customerName: name,
+        customerPhone: phone,
+        products: productsText,
+        total: fmt(total),
+        delivery: deliveryOption.label,
+        payment: payment === "cliq" ? "كلك" : "كاش عند الاستلام",
+        notes: notes.trim(),
+        dateTime: `${dateStr} - ${timeStr}`,
+      };
+      fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(sheetPayload),
+      }).catch((err) => {
+        console.error("[Sheets] Failed to log order:", err);
+      });
+    }
 
     const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(lines.join("\n"))}`;
     window.open(whatsappUrl, "_blank");
