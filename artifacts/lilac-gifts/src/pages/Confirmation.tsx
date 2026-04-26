@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useEffect, useState } from "react";
-import { WHATSAPP_PHONE } from "../data";
+import { WHATSAPP_PHONE, GOOGLE_SHEETS_WEBHOOK_URL } from "../data";
 
 type LastOrder = {
   number: string;
@@ -46,6 +46,17 @@ export default function Confirmation() {
   const followUpUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${followUpText}`;
 
   const confirmCancel = () => {
+    if (GOOGLE_SHEETS_WEBHOOK_URL) {
+      fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "cancel", orderNumber: order.number }),
+      }).catch((err) => {
+        console.error("[Sheets] cancel failed:", err);
+      });
+    }
+
     const cancelLines = [
       "❌ طلب إلغاء",
       `رقم الطلب: ${order.number}`,
