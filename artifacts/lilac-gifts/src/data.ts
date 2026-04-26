@@ -122,7 +122,7 @@ export const CONTACT_PHONE_LOCAL = "0782859651";
 export const CONTACT_PHONE_INTL = "962782859651";
 export const WHATSAPP_PHONE = "962782859651";
 export const INSTAGRAM_URL = "https://www.instagram.com/lilac_gifts2022?igsh=MWNvOGJoMnh6NHVmZQ==";
-export const GOOGLE_SHEETS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbx8vcblSkSSC6k3tjdzgwqvn0AZIgVBL9rJ76eGFKFShon6QZC2IECKugmlIvNi1AZn/exec";
+export const GOOGLE_SHEETS_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxvmQ1XQjs40gAQ-v-M9WiN1egNBHCJlRgqqM_fuUgw7bSDiT2g82Sq8g9LoSE1EYEs/exec";
 
 export type Occasion = {
   name: string;
