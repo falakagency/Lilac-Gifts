@@ -120,8 +120,8 @@ export function filterByBudget(products: Product[], budget: BudgetFilterValue): 
 
 export const CONTACT_PHONE_LOCAL = "0782859651";
 export const CONTACT_PHONE_INTL = "962782859651";
-export const WHATSAPP_PHONE = "962778967531";
-export const FORMSPREE_ENDPOINT = "https://formspree.io/f/mlgaabjd";
+export const WHATSAPP_PHONE = "962781747824";
+export const INSTAGRAM_URL = "https://www.instagram.com/lilac_gifts2022?igsh=MWNvOGJoMnh6NHVmZQ==";
 
 export type Occasion = {
   name: string;

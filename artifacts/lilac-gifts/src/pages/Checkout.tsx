@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useState } from "react";
 import { useCart } from "../cart";
-import { FORMSPREE_ENDPOINT } from "../data";
+import { WHATSAPP_PHONE } from "../data";
 
 type DeliveryKey = "city" | "village";
 
@@ -71,63 +71,24 @@ export default function Checkout() {
 
     const lines = [
       "🎁 طلب جديد - Lilac Gifts",
+      `🔖 رقم الطلب: ${orderNumber}`,
       `📅 ${dateStr} - ${timeStr}`,
-      `👤 ${name}`,
-      `📱 ${phone}`,
+      `👤 الاسم: ${name}`,
+      `📱 الهاتف: ${phone}`,
       "",
       "🛒 المنتجات:",
-      ...items.map(({ product, qty }) => `• ${product.name} × ${qty}`),
+      ...items.map(({ product, qty }) => `• ${product.name} × ${qty} (${product.price})`),
       "",
-      `🚚 ${deliveryOption.label}`,
-      `💳 ${payment === "cliq" ? "كلك" : "كاش عند الاستلام"}`,
+      `🚚 التوصيل: ${deliveryOption.label} (${fmt(deliveryOption.cost)})`,
+      `💳 الدفع: ${payment === "cliq" ? "كلك" : "كاش عند الاستلام"}`,
       `💰 المجموع الكلي: ${fmt(total)}`,
+      ...(notes.trim() ? ["", `📝 ملاحظات: ${notes.trim()}`] : []),
       "",
       "🌐 Lilac Gifts",
     ];
 
-    const productsText = items
-      .map(({ product, qty }) => `${product.name} × ${qty} (${product.price})`)
-      .join(" | ");
-    const paymentLabel = payment === "cliq" ? "كلك" : "كاش عند الاستلام";
-
-    if (!FORMSPREE_ENDPOINT || FORMSPREE_ENDPOINT.endsWith("xxxxxxx")) {
-      console.warn(
-        "[Formspree] Skipped: endpoint is not configured. Edit FORMSPREE_ENDPOINT in src/data.ts with your real form ID (e.g. https://formspree.io/f/abcd1234).",
-      );
-    } else {
-      const payload = {
-        _subject: `طلب جديد ${orderNumber} - Lilac Gifts`,
-        orderNumber,
-        customerName: name,
-        customerPhone: phone,
-        products: productsText,
-        total: fmt(total),
-        delivery: deliveryOption.label,
-        payment: paymentLabel,
-        dateTime: `${dateStr} - ${timeStr}`,
-        message: lines.join("\n"),
-      };
-      console.log("[Formspree] Sending order to", FORMSPREE_ENDPOINT, payload);
-      fetch(FORMSPREE_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(payload),
-      })
-        .then(async (res) => {
-          const body = await res.text();
-          if (res.ok) {
-            console.log("[Formspree] ✅ Order sent successfully", res.status, body);
-          } else {
-            console.error("[Formspree] ❌ Request failed", res.status, body);
-          }
-        })
-        .catch((err) => {
-          console.error("[Formspree] ❌ Network error:", err);
-        });
-    }
+    const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(lines.join("\n"))}`;
+    window.open(whatsappUrl, "_blank");
 
     try {
       sessionStorage.setItem(
