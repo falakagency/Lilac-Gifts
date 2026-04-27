@@ -31,7 +31,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (typeof window === "undefined") return [];
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? (JSON.parse(raw) as CartItem[]) : [];
+      if (!raw) return [];
+      const parsed = JSON.parse(raw) as unknown;
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter(
+        (item): item is CartItem =>
+          !!item &&
+          typeof item === "object" &&
+          "product" in item &&
+          !!(item as CartItem).product &&
+          typeof (item as CartItem).product.id === "number" &&
+          typeof (item as CartItem).qty === "number",
+      );
     } catch {
       return [];
     }
