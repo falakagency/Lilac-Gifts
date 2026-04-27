@@ -63,6 +63,103 @@ export const OCCASIONS: Occasion[] = [
   { name: "العودة للمدارس", emoji: "📚", month: 9, day: 1 },
 ];
 
+export type SeedCategory = { id: number; name: string; icon: string };
+export type SeedProduct = {
+  id: number;
+  name: string;
+  price: number;
+  description: string;
+  image_url: string;
+  gallery: string[];
+  category_id: number;
+  bestseller: boolean;
+  rating: number;
+  reviews: number;
+};
+
+export const SEED_CATEGORIES: SeedCategory[] = [
+  { id: 1, name: "التخرج", icon: "🎓" },
+  { id: 2, name: "ترفيعات عسكرية", icon: "⭐" },
+  { id: 3, name: "يوم الأم", icon: "🌸" },
+  { id: 4, name: "رمضان وعيد الفطر", icon: "🌙" },
+  { id: 5, name: "دلات وفناجين", icon: "☕" },
+];
+
+export const SEED_PRODUCTS: SeedProduct[] = [
+  {
+    id: 101,
+    name: "طقم تخرج أمن عام",
+    price: 15,
+    description: "طقم هدايا مخصص لمناسبة التخرج، مع طباعة اسم الخريج",
+    image_url: "/products/amn-aam.jpeg",
+    gallery: [],
+    category_id: 1,
+    bestseller: true,
+    rating: 4.8,
+    reviews: 47,
+  },
+  {
+    id: 102,
+    name: "طقم تخرج جامعي",
+    price: 20,
+    description: "هدية أنيقة للخريجين الجدد، مع طباعة الاسم وسنة التخرج",
+    image_url: "/products/uni-grad-1.jpeg",
+    gallery: ["/products/uni-grad-1.jpeg", "/products/uni-grad-2.jpeg", "/products/uni-grad-3.jpeg"],
+    category_id: 1,
+    bestseller: true,
+    rating: 4.9,
+    reviews: 63,
+  },
+  {
+    id: 201,
+    name: "طقم ترفيع ضابط",
+    price: 25,
+    description: "طقم تهنئة فاخر بالرتبة الجديدة، مع طباعة الاسم والشعار العسكري",
+    image_url: "/products/promo-1.jpeg",
+    gallery: ["/products/promo-1.jpeg", "/products/promo-2.jpeg"],
+    category_id: 2,
+    bestseller: false,
+    rating: 4.7,
+    reviews: 31,
+  },
+  {
+    id: 301,
+    name: "طقم يوم الأم الكلاسيكي",
+    price: 18,
+    description: "أجمل هدية لأحن الأمهات، يحتوي على لوحة مرآة مخصصة باسم الأم وعبارة محفورة، مع شمعة وفنجان قهوة مخصص",
+    image_url: "/products/mom-1.jpeg",
+    gallery: ["/products/mom-1.jpeg", "/products/mom-2.jpeg", "/products/mom-3.jpeg"],
+    category_id: 3,
+    bestseller: true,
+    rating: 5.0,
+    reviews: 89,
+  },
+  {
+    id: 401,
+    name: "طقم رمضان وعيد الفطر",
+    price: 22,
+    description: "بكجات هدايا رمضانية وعيدية فاخرة، تشمل سبحة، ماء زمزم، وبطاقات معايدة",
+    image_url: "/products/ramadan-1.jpeg",
+    gallery: ["/products/ramadan-1.jpeg", "/products/ramadan-2.jpeg", "/products/ramadan-3.jpeg"],
+    category_id: 4,
+    bestseller: false,
+    rating: 4.6,
+    reviews: 24,
+  },
+  {
+    id: 501,
+    name: "دلة بطباعة مخصصة",
+    price: 30,
+    description: "دلة قهوة فاخرة مع طباعة الاسم أو عبارة مخصصة، تأتي مع فناجين مطابقة",
+    image_url: "/products/dallah-1.jpeg",
+    gallery: ["/products/dallah-1.jpeg", "/products/dallah-2.jpeg", "/products/dallah-3.jpeg"],
+    category_id: 5,
+    bestseller: true,
+    rating: 4.9,
+    reviews: 56,
+  },
+];
+
 export function getNextOccasion(now: Date = new Date()): { occasion: Occasion; date: Date; daysLeft: number } {
   const year = now.getFullYear();
   const today = new Date(year, now.getMonth(), now.getDate());
