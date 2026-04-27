@@ -390,8 +390,16 @@ function ProductsTab({ refreshAll }: { refreshAll: () => Promise<void> }) {
               </label>
             </div>
             {form.image_url && (
-              <div className="mt-3 inline-block bg-[#EDE0F7] dark:bg-[#1a1a2e] rounded-xl overflow-hidden">
-                <img src={form.image_url} alt="" className="w-32 h-32 object-cover" />
+              <div
+                className="mt-3 inline-block bg-[#EDE0F7] dark:bg-[#1a1a2e] rounded-xl overflow-hidden"
+                style={{ width: 96, height: 96 }}
+              >
+                <img
+                  src={form.image_url}
+                  alt=""
+                  className="block object-cover"
+                  style={{ width: 96, height: 96 }}
+                />
               </div>
             )}
           </div>
@@ -504,40 +512,48 @@ function ProductsTab({ refreshAll }: { refreshAll: () => Promise<void> }) {
               return (
                 <div
                   key={p.id}
-                  className="flex flex-col sm:flex-row gap-3 sm:items-center bg-[#EDE0F7]/40 dark:bg-[#1a1a2e] rounded-2xl p-3 border border-[#EDE0F7] dark:border-[#2a2f4a]"
+                  className="flex items-center gap-3 bg-[#EDE0F7]/40 dark:bg-[#1a1a2e] rounded-2xl p-3 border border-[#EDE0F7] dark:border-[#2a2f4a]"
                 >
-                  <div className="w-20 h-20 bg-[#EDE0F7] dark:bg-[#16213e] rounded-xl overflow-hidden flex-shrink-0">
+                  <div
+                    className="bg-[#EDE0F7] dark:bg-[#16213e] rounded-xl overflow-hidden shrink-0"
+                    style={{ width: 64, height: 64 }}
+                  >
                     {p.image_url ? (
-                      <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
+                      <img
+                        src={p.image_url}
+                        alt={p.name}
+                        className="block object-cover"
+                        style={{ width: 64, height: 64 }}
+                      />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-2xl text-[#A87FD1]">🎁</div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-[#2A1F3D] dark:text-[#eee] truncate">
-                      {p.bestseller && <span className="text-yellow-500 mr-1">⭐</span>}
+                    <div className="font-bold text-[#2A1F3D] dark:text-[#eee] truncate text-sm sm:text-base">
+                      {p.bestseller && <span className="text-yellow-500 ml-1">⭐</span>}
                       {p.name}
                     </div>
-                    <div className="text-sm text-[#A87FD1]">
+                    <div className="text-xs sm:text-sm text-[#A87FD1] truncate">
                       {Number(p.price ?? 0).toFixed(2)} د.أ
                       {cat && <span className="mx-2">•</span>}
                       {cat && <span>{cat.icon} {cat.name}</span>}
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2 shrink-0">
                     <button
                       onClick={() => startEdit(p)}
                       disabled={busy}
-                      className="px-4 py-2 rounded-xl bg-[#534AB7] text-white font-bold text-sm hover:bg-[#A87FD1] btn-anim disabled:opacity-60"
+                      className="px-3 py-2 rounded-xl bg-[#534AB7] text-white font-bold text-xs sm:text-sm hover:bg-[#A87FD1] btn-anim disabled:opacity-60 whitespace-nowrap"
                     >
-                      ✏️ تعديل
+                      ✏️ <span className="hidden sm:inline">تعديل</span>
                     </button>
                     <button
                       onClick={() => handleDelete(p)}
                       disabled={busy}
-                      className="px-4 py-2 rounded-xl bg-red-500 text-white font-bold text-sm hover:bg-red-600 btn-anim disabled:opacity-60"
+                      className="px-3 py-2 rounded-xl bg-red-500 text-white font-bold text-xs sm:text-sm hover:bg-red-600 btn-anim disabled:opacity-60 whitespace-nowrap"
                     >
-                      🗑️ حذف
+                      🗑️ <span className="hidden sm:inline">حذف</span>
                     </button>
                   </div>
                 </div>
