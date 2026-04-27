@@ -1,14 +1,24 @@
 import { useState } from "react";
 import { Link, useParams } from "wouter";
-import { findCategory, filterByBudget, type BudgetFilterValue } from "../data";
+import { filterByBudget, type BudgetFilterValue } from "../data";
+import { useCatalog } from "../lib/catalog";
 import ProductCard from "../components/ProductCard";
 import BudgetFilter from "../components/BudgetFilter";
 
 export default function Category() {
   const params = useParams();
   const id = Number(params.id);
+  const { findCategory, loading } = useCatalog();
   const category = findCategory(id);
   const [budget, setBudget] = useState<BudgetFilterValue>("all");
+
+  if (loading && !category) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-20 text-center text-[#A87FD1]">
+        جارٍ تحميل القسم...
+      </div>
+    );
+  }
 
   if (!category) {
     return (

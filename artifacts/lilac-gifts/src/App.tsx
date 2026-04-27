@@ -1,6 +1,7 @@
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { CartProvider } from "./cart";
 import { ThemeProvider } from "./theme";
+import { CatalogProvider } from "./lib/catalog";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Category from "./pages/Category";
@@ -9,6 +10,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Confirmation from "./pages/Confirmation";
 import Track from "./pages/Track";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 function Routes() {
@@ -21,6 +23,7 @@ function Routes() {
       <Route path="/checkout" component={Checkout} />
       <Route path="/confirmation" component={Confirmation} />
       <Route path="/track" component={Track} />
+      <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -29,13 +32,15 @@ function Routes() {
 function App() {
   return (
     <ThemeProvider>
-      <CartProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Layout>
-            <Routes />
-          </Layout>
-        </WouterRouter>
-      </CartProvider>
+      <CatalogProvider>
+        <CartProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <Layout>
+              <Routes />
+            </Layout>
+          </WouterRouter>
+        </CartProvider>
+      </CatalogProvider>
     </ThemeProvider>
   );
 }

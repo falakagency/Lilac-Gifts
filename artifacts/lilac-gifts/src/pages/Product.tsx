@@ -1,6 +1,7 @@
 import { Link, useParams, useLocation } from "wouter";
 import { useEffect, useRef, useState } from "react";
-import { findProduct, findCategoryByProduct, WHATSAPP_PHONE } from "../data";
+import { WHATSAPP_PHONE } from "../data";
+import { useCatalog } from "../lib/catalog";
 import { useCart } from "../cart";
 import Stars from "../components/Stars";
 import ShareButton from "../components/ShareButton";
@@ -80,6 +81,7 @@ function ProductGallery({ product }: { product: import("../data").Product }) {
 export default function Product() {
   const params = useParams();
   const id = Number(params.id);
+  const { findProduct, findCategoryByProduct, loading } = useCatalog();
   const product = findProduct(id);
   const category = findCategoryByProduct(id);
   const { addItem } = useCart();
@@ -88,6 +90,14 @@ export default function Product() {
   const [greeting, setGreeting] = useState("");
   const [customization, setCustomization] = useState("");
   const addBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  if (loading && !product) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-20 text-center text-[#A87FD1]">
+        جارٍ تحميل المنتج...
+      </div>
+    );
+  }
 
   if (!product) {
     return (

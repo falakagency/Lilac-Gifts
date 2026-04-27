@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import {
-  categories,
-  allProducts,
-  bestsellerProducts,
-  filterByBudget,
-  type BudgetFilterValue,
-} from "../data";
+import { filterByBudget, type BudgetFilterValue } from "../data";
+import { useCatalog } from "../lib/catalog";
 import ProductCard from "../components/ProductCard";
 import BudgetFilter from "../components/BudgetFilter";
 import CountdownCard from "../components/CountdownCard";
@@ -42,6 +37,7 @@ function useTypewriter(text: string) {
 export default function Home() {
   const [budget, setBudget] = useState<BudgetFilterValue>("all");
   const { shown: heroText, showCursor: heroCursor } = useTypewriter(HERO_TEXT);
+  const { categories, allProducts, bestsellerProducts, loading, error } = useCatalog();
 
   const filtered = filterByBudget(allProducts, budget);
   const featured = filtered.slice(0, 4);
@@ -86,45 +82,61 @@ export default function Home() {
       {/* Countdown to next occasion */}
       <CountdownCard />
 
+      {error && (
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-300 text-red-700 dark:text-red-300 rounded-2xl p-4 text-center text-sm">
+            تعذّر تحميل المنتجات حالياً. حاولي تحديث الصفحة.
+          </div>
+        </div>
+      )}
+
       {/* Categories */}
       <section id="categories" className="max-w-6xl mx-auto px-4 py-16">
         <div className="text-center mb-10 fade-up">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-2">تسوق حسب المناسبة</h2>
           <p className="text-[#A87FD1]">اختاري المناسبة وستجدين الهدية المثالية</p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          {categories.map((cat, i) => (
-            <Link
-              key={cat.id}
-              href={`/category/${cat.id}`}
-              className="group flex flex-col items-center justify-center bg-white dark:bg-[#16213e] border-2 border-[#EDE0F7] dark:border-[#2a2f4a] rounded-2xl p-6 hover:border-[#C8A8E9] hover:bg-[#EDE0F7] dark:hover:bg-[#2a2f4a] lift-anim shadow-sm fade-up"
-              style={{ animationDelay: `${i * 80}ms` }}
-            >
-              <div className="text-5xl mb-3 icon-anim">{cat.icon}</div>
-              <div className="font-bold text-[#534AB7] dark:text-[#C8A8E9] text-center">{cat.name}</div>
-            </Link>
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center py-10 text-[#A87FD1]">جارٍ تحميل الأقسام...</div>
+        ) : categories.length === 0 ? (
+          <div className="text-center py-10 text-[#A87FD1]">لا توجد أقسام حالياً</div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            {categories.map((cat, i) => (
+              <Link
+                key={cat.id}
+                href={`/category/${cat.id}`}
+                className="group flex flex-col items-center justify-center bg-white dark:bg-[#16213e] border-2 border-[#EDE0F7] dark:border-[#2a2f4a] rounded-2xl p-6 hover:border-[#C8A8E9] hover:bg-[#EDE0F7] dark:hover:bg-[#2a2f4a] lift-anim shadow-sm fade-up"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <div className="text-5xl mb-3 icon-anim">{cat.icon}</div>
+                <div className="font-bold text-[#534AB7] dark:text-[#C8A8E9] text-center">{cat.name}</div>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Most Ordered (Bestsellers) */}
-      <section className="bg-gradient-to-bl from-[#EDE0F7]/70 to-white dark:from-[#16213e] dark:to-[#1a1a2e] py-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-10 fade-up">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-2">
-              الأكثر طلباً 🔥
-            </h2>
-            <p className="text-[#A87FD1]">المنتجات التي يحبها عملاؤنا أكثر</p>
+      {bestsellers.length > 0 && (
+        <section className="bg-gradient-to-bl from-[#EDE0F7]/70 to-white dark:from-[#16213e] dark:to-[#1a1a2e] py-16">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="text-center mb-10 fade-up">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-2">
+                الأكثر طلباً 🔥
+              </h2>
+              <p className="text-[#A87FD1]">المنتجات التي يحبها عملاؤنا أكثر</p>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              {bestsellers.map((p, i) => (
+                <div key={p.id} className="fade-up" style={{ animationDelay: `${i * 100}ms` }}>
+                  <ProductCard product={p} />
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {bestsellers.map((p, i) => (
-              <div key={p.id} className="fade-up" style={{ animationDelay: `${i * 100}ms` }}>
-                <ProductCard product={p} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Featured with budget filter */}
       <section className="bg-[#EDE0F7]/40 dark:bg-[#16213e]/60 py-16">
@@ -136,7 +148,9 @@ export default function Home() {
 
           <BudgetFilter value={budget} onChange={setBudget} />
 
-          {featured.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-12 text-[#A87FD1] fade-up">جارٍ تحميل المنتجات...</div>
+          ) : featured.length === 0 ? (
             <div className="text-center py-12 text-[#A87FD1] fade-up">
               <div className="text-4xl mb-2">🌷</div>
               لا توجد منتجات ضمن هذه الميزانية حالياً
