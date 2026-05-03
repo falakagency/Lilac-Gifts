@@ -2,14 +2,25 @@ import { Link, useLocation } from "wouter";
 import { useEffect, useState } from "react";
 import { WHATSAPP_PHONE, GOOGLE_SHEETS_WEBHOOK_URL } from "../data";
 
+type LastOrderItem = {
+  name: string;
+  price: string;
+  qty: number;
+  customization?: string;
+};
+
 type LastOrder = {
   number: string;
   name: string;
   phone: string;
+  location?: string;
   total: string;
   subtotal?: string;
   delivery?: string;
   deliveryCost?: string;
+  payment?: string;
+  notes?: string;
+  items?: LastOrderItem[];
   createdAt: string;
 };
 
@@ -36,13 +47,32 @@ export default function Confirmation() {
 
   if (!order) return null;
 
-  const followUpText = encodeURIComponent(
-    [
-      "مرحباً Lilac Gifts 🌸",
-      `أرغب بالاستفسار عن طلبي رقم ${order.number}`,
-      `الاسم: ${order.name}`,
-    ].join("\n"),
-  );
+  const followUpLines: string[] = [
+    "مرحباً Lilac Gifts 🌸",
+    `أرغب بالاستفسار عن طلبي رقم ${order.number}`,
+    `👤 الاسم: ${order.name}`,
+    `📞 الهاتف: ${order.phone}`,
+  ];
+  if (order.location) {
+    followUpLines.push(`📍 الموقع: ${order.location}`);
+  }
+  if (order.items && order.items.length > 0) {
+    followUpLines.push("", "🛍️ المنتجات:");
+    order.items.forEach((it) => {
+      followUpLines.push(`• ${it.name} × ${it.qty} (${it.price})`);
+      if (it.customization) {
+        followUpLines.push(`   ✏️ تخصيص: ${it.customization}`);
+      }
+    });
+  }
+  if (order.delivery) {
+    followUpLines.push("", `🚚 التوصيل: ${order.delivery}${order.deliveryCost ? ` — ${order.deliveryCost}` : ""}`);
+  }
+  if (order.payment) {
+    followUpLines.push(`💰 الدفع: ${order.payment}`);
+  }
+  followUpLines.push(`💵 المجموع: ${order.total}`);
+  const followUpText = encodeURIComponent(followUpLines.join("\n"));
   const followUpUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${followUpText}`;
 
   const confirmCancel = () => {

@@ -22,9 +22,9 @@ export default function Cart() {
       <h1 className="text-3xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-8">سلة التسوق</h1>
 
       <div className="space-y-4 mb-8">
-        {items.map(({ product, qty }) => (
+        {items.map(({ id, product, qty, customization }) => (
           <div
-            key={product.id}
+            key={id}
             className="flex flex-col sm:flex-row gap-4 bg-white dark:bg-[#16213e] border border-[#EDE0F7] dark:border-[#2a2f4a] rounded-2xl p-4 hover:border-[#C8A8E9] btn-anim"
           >
             <Link href={`/product/${product.id}`} className="block w-full sm:w-28 h-28 bg-[#EDE0F7] dark:bg-[#1a1a2e] rounded-xl overflow-hidden flex-shrink-0">
@@ -33,12 +33,26 @@ export default function Cart() {
 
             <div className="flex-1 flex flex-col">
               <Link href={`/product/${product.id}`} className="font-bold text-[#2A1F3D] dark:text-[#eee] hover:text-[#534AB7] dark:hover:text-[#C8A8E9] mb-1">{product.name}</Link>
-              <div className="text-[#A87FD1] font-bold mb-3">{product.price}</div>
+              <div className="text-[#A87FD1] font-bold mb-2">{product.price}</div>
+
+              {customization && (
+                <div className="mb-3 bg-[#EDE0F7]/50 dark:bg-[#1a1a2e] border border-[#C8A8E9]/40 dark:border-[#2a2f4a] rounded-xl px-3 py-2 text-sm">
+                  <div className="flex items-start gap-2">
+                    <span className="text-base leading-tight">✏️</span>
+                    <div className="flex-1">
+                      <div className="text-xs text-[#A87FD1] font-semibold mb-0.5">التخصيص</div>
+                      <div className="text-[#2A1F3D] dark:text-[#eee] whitespace-pre-wrap break-words">
+                        {customization}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="mt-auto flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 bg-[#EDE0F7] dark:bg-[#2a2f4a] rounded-full p-1">
                   <button
-                    onClick={() => updateQty(product.id, qty - 1)}
+                    onClick={() => updateQty(id, qty - 1)}
                     className="w-8 h-8 rounded-full bg-white dark:bg-[#16213e] text-[#534AB7] dark:text-[#C8A8E9] font-bold hover:bg-[#C8A8E9] hover:text-white btn-anim"
                     aria-label="إنقاص"
                   >
@@ -46,7 +60,7 @@ export default function Cart() {
                   </button>
                   <span className="w-8 text-center font-bold text-[#534AB7] dark:text-[#C8A8E9]">{qty}</span>
                   <button
-                    onClick={() => updateQty(product.id, qty + 1)}
+                    onClick={() => updateQty(id, qty + 1)}
                     className="w-8 h-8 rounded-full bg-white dark:bg-[#16213e] text-[#534AB7] dark:text-[#C8A8E9] font-bold hover:bg-[#C8A8E9] hover:text-white btn-anim"
                     aria-label="زيادة"
                   >
@@ -55,7 +69,7 @@ export default function Cart() {
                 </div>
 
                 <button
-                  onClick={() => removeItem(product.id)}
+                  onClick={() => removeItem(id)}
                   className="text-sm text-red-500 hover:text-red-700 font-semibold"
                 >
                   حذف

@@ -112,7 +112,7 @@ export default function Product() {
   }
 
   const handleAdd = () => {
-    addItem(product, 1);
+    addItem(product, 1, customization);
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
 
@@ -158,7 +158,7 @@ export default function Product() {
   };
 
   const handleBuyNow = () => {
-    addItem(product, 1);
+    addItem(product, 1, customization);
     navigate("/checkout");
   };
 

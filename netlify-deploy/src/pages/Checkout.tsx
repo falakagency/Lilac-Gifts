@@ -21,16 +21,27 @@ const CLIQ = {
   bank: "العربي الإسلامي",
 };
 
+const REQUIRED_MSG = "هذا الحقل مطلوب";
+
 export default function Checkout() {
   const { items, totalPriceNumber, clear } = useCart();
   const [, navigate] = useLocation();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [location, setLocationField] = useState("");
   const [notes, setNotes] = useState("");
   const [delivery, setDelivery] = useState<DeliveryKey>("city");
   const [payment, setPayment] = useState<"cliq" | "cash">("cliq");
-  const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; phone?: string; location?: string }>({});
+  const [touched, setTouched] = useState<{ name?: boolean; phone?: boolean; location?: boolean }>({});
   const [submitting, setSubmitting] = useState(false);
+
+  const validateField = (field: "name" | "phone" | "location", value: string) => {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: value.trim() ? undefined : REQUIRED_MSG,
+    }));
+  };
 
   if (items.length === 0) {
     return (
@@ -50,12 +61,15 @@ export default function Checkout() {
   const total = subtotal + deliveryOption.cost;
   const fmt = (n: number) => `${n.toFixed(2)} د.أ`;
 
+  const isFormValid = name.trim() !== "" && phone.trim() !== "" && location.trim() !== "";
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting) return;
-    const errs: { name?: string; phone?: string } = {};
-    if (!name.trim()) errs.name = "يرجى إدخال الاسم";
-    if (!phone.trim()) errs.phone = "يرجى إدخال رقم الهاتف";
+    const errs: { name?: string; phone?: string; location?: string } = {};
+    if (!name.trim()) errs.name = REQUIRED_MSG;
+    if (!phone.trim()) errs.phone = REQUIRED_MSG;
+    if (!location.trim()) errs.location = REQUIRED_MSG;
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
 
@@ -73,19 +87,37 @@ export default function Checkout() {
       minute: "2-digit",
     });
 
+    // Build a clear products string with customization clearly visible per-item
+    const productLines = items.map(({ product, qty, customization }) => {
+      const base = `${product.name} × ${qty} (${product.price})`;
+      if (customization && customization.trim()) {
+        return `${base} — ✏️ تخصيص: ${customization.trim()}`;
+      }
+      return base;
+    });
+    const productsText = productLines.join(" | ");
+
     if (GOOGLE_SHEETS_WEBHOOK_URL) {
-      const productsText = items
-        .map(({ product, qty }) => `${product.name} × ${qty} (${product.price})`)
-        .join(" | ");
       const sheetPayload = {
         orderNumber,
-        customerName: name,
-        customerPhone: phone,
+        customerName: name.trim(),
+        customerPhone: phone.trim(),
+        customerLocation: location.trim(),
         products: productsText,
+        productsDetailed: items.map(({ product, qty, customization }) => ({
+          name: product.name,
+          qty,
+          price: product.price,
+          customization: (customization ?? "").trim(),
+        })),
         total: fmt(total),
+        subtotal: fmt(subtotal),
+        deliveryCost: fmt(deliveryOption.cost),
         delivery: deliveryOption.label,
         payment: payment === "cliq" ? "كلك" : "كاش عند الاستلام",
         notes: notes.trim(),
+        date: dateStr,
+        time: timeStr,
         dateTime: `${dateStr} - ${timeStr}`,
       };
       fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
@@ -103,18 +135,20 @@ export default function Checkout() {
         "lilac-last-order",
         JSON.stringify({
           number: orderNumber,
-          name,
-          phone,
+          name: name.trim(),
+          phone: phone.trim(),
+          location: location.trim(),
           total: fmt(total),
           subtotal: fmt(subtotal),
           delivery: deliveryOption.label,
           deliveryCost: fmt(deliveryOption.cost),
           payment: payment === "cliq" ? "كلك" : "كاش عند الاستلام",
           notes: notes.trim(),
-          items: items.map(({ product, qty }) => ({
+          items: items.map(({ product, qty, customization }) => ({
             name: product.name,
             price: product.price,
             qty,
+            customization: (customization ?? "").trim(),
           })),
           createdAt: now.toISOString(),
         }),
@@ -135,13 +169,22 @@ export default function Checkout() {
       <h1 className="text-3xl font-extrabold text-[#534AB7] dark:text-[#C8A8E9] mb-8">إتمام الطلب</h1>
 
       <div className="grid md:grid-cols-5 gap-8">
-        <form onSubmit={handleSubmit} className="md:col-span-3 space-y-5">
+        <form onSubmit={handleSubmit} className="md:col-span-3 space-y-5" noValidate>
           <div>
-            <label className="block text-[#534AB7] dark:text-[#C8A8E9] font-bold mb-2">الاسم الكامل</label>
+            <label className="block text-[#534AB7] dark:text-[#C8A8E9] font-bold mb-2">
+              الاسم الكامل <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (touched.name || errors.name) validateField("name", e.target.value);
+              }}
+              onBlur={() => {
+                setTouched((p) => ({ ...p, name: true }));
+                validateField("name", name);
+              }}
               placeholder="مثال: سارة أحمد"
               className={`${inputBase} ${errors.name ? "border-red-400" : "border-[#EDE0F7] dark:border-[#2a2f4a]"}`}
             />
@@ -149,16 +192,46 @@ export default function Checkout() {
           </div>
 
           <div>
-            <label className="block text-[#534AB7] dark:text-[#C8A8E9] font-bold mb-2">رقم الهاتف</label>
+            <label className="block text-[#534AB7] dark:text-[#C8A8E9] font-bold mb-2">
+              رقم الهاتف <span className="text-red-500">*</span>
+            </label>
             <input
               type="tel"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => {
+                setPhone(e.target.value);
+                if (touched.phone || errors.phone) validateField("phone", e.target.value);
+              }}
+              onBlur={() => {
+                setTouched((p) => ({ ...p, phone: true }));
+                validateField("phone", phone);
+              }}
               placeholder="07XXXXXXXX"
               dir="ltr"
               className={`${inputBase} text-right ${errors.phone ? "border-red-400" : "border-[#EDE0F7] dark:border-[#2a2f4a]"}`}
             />
             {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+          </div>
+
+          <div>
+            <label className="block text-[#534AB7] dark:text-[#C8A8E9] font-bold mb-2">
+              الموقع / العنوان 📍 <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => {
+                setLocationField(e.target.value);
+                if (touched.location || errors.location) validateField("location", e.target.value);
+              }}
+              onBlur={() => {
+                setTouched((p) => ({ ...p, location: true }));
+                validateField("location", location);
+              }}
+              placeholder="مثال: عمان، الجبيهة، شارع الجامعة..."
+              className={`${inputBase} ${errors.location ? "border-red-400" : "border-[#EDE0F7] dark:border-[#2a2f4a]"}`}
+            />
+            {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location}</p>}
           </div>
 
           {/* Delivery Options */}
@@ -294,7 +367,7 @@ export default function Checkout() {
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="عنوان التوصيل، تفاصيل التخصيص (اسم/صورة)، موعد التسليم..."
+              placeholder="موعد التسليم، أي تفاصيل إضافية..."
               rows={4}
               className={`${inputBase} border-[#EDE0F7] dark:border-[#2a2f4a] resize-none`}
             />
@@ -302,24 +375,36 @@ export default function Checkout() {
 
           <button
             type="submit"
-            disabled={submitting}
-            className="w-full bg-[#534AB7] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#A87FD1] btn-anim shadow-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            disabled={submitting || !isFormValid}
+            className="w-full bg-[#534AB7] text-white py-4 rounded-2xl font-bold text-lg hover:bg-[#A87FD1] btn-anim shadow-lg flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:bg-[#534AB7]"
           >
             <span>{submitting ? "جارٍ الإرسال..." : "إتمام الطلب"}</span>
             {!submitting && <span>✓</span>}
           </button>
+          {!isFormValid && !submitting && (
+            <p className="text-xs text-[#A87FD1] text-center -mt-2">
+              يرجى تعبئة الاسم ورقم الهاتف والموقع لإتمام الطلب
+            </p>
+          )}
         </form>
 
         <aside className="md:col-span-2">
           <div className="bg-[#EDE0F7] dark:bg-[#16213e] dark:border dark:border-[#2a2f4a] rounded-2xl p-5 sticky top-24">
             <h3 className="font-extrabold text-[#534AB7] dark:text-[#C8A8E9] text-lg mb-4">ملخص الطلب</h3>
             <div className="space-y-3 mb-4">
-              {items.map(({ product, qty }) => (
-                <div key={product.id} className="flex justify-between text-sm">
-                  <span className="text-[#2A1F3D] dark:text-[#eee]">
-                    {product.name} <span className="text-[#A87FD1]">× {qty}</span>
-                  </span>
-                  <span className="text-[#534AB7] dark:text-[#C8A8E9] font-bold whitespace-nowrap">{product.price}</span>
+              {items.map(({ id, product, qty, customization }) => (
+                <div key={id} className="text-sm">
+                  <div className="flex justify-between gap-2">
+                    <span className="text-[#2A1F3D] dark:text-[#eee]">
+                      {product.name} <span className="text-[#A87FD1]">× {qty}</span>
+                    </span>
+                    <span className="text-[#534AB7] dark:text-[#C8A8E9] font-bold whitespace-nowrap">{product.price}</span>
+                  </div>
+                  {customization && (
+                    <div className="text-xs text-[#A87FD1] mt-0.5 pr-2 break-words">
+                      ✏️ {customization}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

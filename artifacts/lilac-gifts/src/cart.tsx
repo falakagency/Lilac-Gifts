@@ -2,15 +2,17 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import type { Product } from "./data";
 
 export type CartItem = {
+  id: string;
   product: Product;
   qty: number;
+  customization?: string;
 };
 
 type CartContextType = {
   items: CartItem[];
-  addItem: (product: Product, qty?: number) => void;
-  removeItem: (productId: number) => void;
-  updateQty: (productId: number, qty: number) => void;
+  addItem: (product: Product, qty?: number, customization?: string) => void;
+  removeItem: (itemId: string) => void;
+  updateQty: (itemId: string, qty: number) => void;
   clear: () => void;
   totalCount: number;
   totalPriceText: string;
@@ -26,6 +28,21 @@ function parsePrice(price: string): number {
   return m ? parseFloat(m[0]) : 0;
 }
 
+function makeItemId(productId: number, customization?: string): string {
+  const c = (customization ?? "").trim();
+  if (!c) return `p${productId}`;
+  let encoded = c;
+  try {
+    encoded =
+      typeof btoa !== "undefined"
+        ? btoa(unescape(encodeURIComponent(c)))
+        : c;
+  } catch {
+    encoded = c;
+  }
+  return `p${productId}-c${encoded}`;
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window === "undefined") return [];
@@ -34,15 +51,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (!raw) return [];
       const parsed = JSON.parse(raw) as unknown;
       if (!Array.isArray(parsed)) return [];
-      return parsed.filter(
-        (item): item is CartItem =>
-          !!item &&
-          typeof item === "object" &&
-          "product" in item &&
-          !!(item as CartItem).product &&
-          typeof (item as CartItem).product.id === "number" &&
-          typeof (item as CartItem).qty === "number",
-      );
+      return parsed
+        .filter(
+          (item): item is Partial<CartItem> & { product?: Product; qty?: number } =>
+            !!item &&
+            typeof item === "object" &&
+            "product" in (item as Record<string, unknown>) &&
+            !!(item as { product?: Product }).product &&
+            typeof (item as { product: Product }).product.id === "number" &&
+            typeof (item as { qty?: number }).qty === "number",
+        )
+        .map((item) => {
+          const product = item.product as Product;
+          const qty = item.qty as number;
+          const customization =
+            typeof item.customization === "string" && item.customization.trim()
+              ? item.customization.trim()
+              : undefined;
+          const id = item.id ?? makeItemId(product.id, customization);
+          return { id, product, qty, customization };
+        });
     } catch {
       return [];
     }
@@ -56,30 +84,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items]);
 
-  const addItem = (product: Product, qty: number = 1) => {
+  const addItem = (product: Product, qty: number = 1, customization?: string) => {
+    const customTrim = customization?.trim() || undefined;
+    const id = makeItemId(product.id, customTrim);
     setItems((prev) => {
-      const existing = prev.find((i) => i.product.id === product.id);
+      const existing = prev.find((i) => i.id === id);
       if (existing) {
-        return prev.map((i) =>
-          i.product.id === product.id ? { ...i, qty: i.qty + qty } : i,
-        );
+        return prev.map((i) => (i.id === id ? { ...i, qty: i.qty + qty } : i));
       }
-      return [...prev, { product, qty }];
+      return [...prev, { id, product, qty, customization: customTrim }];
     });
   };
 
-  const removeItem = (productId: number) => {
-    setItems((prev) => prev.filter((i) => i.product.id !== productId));
+  const removeItem = (itemId: string) => {
+    setItems((prev) => prev.filter((i) => i.id !== itemId));
   };
 
-  const updateQty = (productId: number, qty: number) => {
+  const updateQty = (itemId: string, qty: number) => {
     if (qty <= 0) {
-      removeItem(productId);
+      removeItem(itemId);
       return;
     }
-    setItems((prev) =>
-      prev.map((i) => (i.product.id === productId ? { ...i, qty } : i)),
-    );
+    setItems((prev) => prev.map((i) => (i.id === itemId ? { ...i, qty } : i)));
   };
 
   const clear = () => setItems([]);
