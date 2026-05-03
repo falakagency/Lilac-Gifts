@@ -87,15 +87,14 @@ export default function Checkout() {
       minute: "2-digit",
     });
 
-    // Build a clear products string with customization clearly visible per-item
-    const productLines = items.map(({ product, qty, customization }) => {
-      const base = `${product.name} × ${qty} (${product.price})`;
-      if (customization && customization.trim()) {
-        return `${base} — ✏️ تخصيص: ${customization.trim()}`;
-      }
-      return base;
+    // Build a clear products string: each product on its own line, with customization on the next line
+    const productBlocks = items.map(({ product, qty, customization }, idx) => {
+      const header = `Product ${idx + 1}: ${product.name} × ${qty} - ${product.price}`;
+      const cust = (customization ?? "").trim();
+      const customLine = `Customization: ${cust ? cust : "—"}`;
+      return `${header}\n${customLine}`;
     });
-    const productsText = productLines.join(" | ");
+    const productsText = productBlocks.join("\n\n");
 
     if (GOOGLE_SHEETS_WEBHOOK_URL) {
       const sheetPayload = {
